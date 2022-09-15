@@ -1,0 +1,33 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    env_file:
+      - .env
+
+  app:
+    env_file:
+      - .env
+    container_name: exceed-eco-backend
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    command: sh -c "yarn run start"
+    ports:
+      - "$PORT:$PORT"
+    depends_on:
+     - db
+    restart: unless-stopped
+
+volumes:
+  pgdata:
