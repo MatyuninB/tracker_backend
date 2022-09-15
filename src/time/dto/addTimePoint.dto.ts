@@ -12,6 +12,9 @@ export class AddTimePointDTO {
   time: Date;
 
   @IsString()
+  projectId: number;
+
+  @IsString()
   @IsOptional()
   subtask?: string;
 

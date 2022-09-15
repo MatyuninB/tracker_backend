@@ -16,6 +16,7 @@ export interface TimePoint {
   description?: string;
   title?: string;
   estimate?: string;
+  projectId?: number;
 }
 
 @Entity({ name: 'time' })

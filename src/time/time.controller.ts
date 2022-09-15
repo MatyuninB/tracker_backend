@@ -9,7 +9,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { query } from 'express';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { AddTimePointDTO } from './dto/addTimePoint.dto';
 import { TimeService } from './time.service';

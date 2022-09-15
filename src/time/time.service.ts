@@ -2,17 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
 import { isSameDay } from 'src/helpers/isSameDay';
+import { ProjectEntity } from 'src/projects/entity/project.entity';
 import { CalculatedTime } from 'src/type/CalculatedTime.type';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AddTimePointDTO } from './dto/addTimePoint.dto';
-import { TimeEntity } from './entities/time.entity.';
+import { TimeEntity, TimePoint } from './entities/time.entity.';
 
 @Injectable()
 export class TimeService {
   constructor(
     @InjectRepository(TimeEntity)
     private timeRepository: Repository<TimeEntity>,
+    @InjectRepository(ProjectEntity)
+    private projectRepository: Repository<ProjectEntity>,
   ) {}
 
   async addTimepoint(user: UserEntity, data: AddTimePointDTO) {
@@ -50,6 +53,7 @@ export class TimeService {
       });
 
     result.calculatedTime = this.countTime(result.time);
+
     return result;
   }
 
@@ -91,7 +95,7 @@ export class TimeService {
     }
   }
 
-  private countTime(points: Array<AddTimePointDTO>) {
+  private countTime(points: Array<TimePoint>) {
     return points.reduceRight<CalculatedTime>(
       (acc, e) => {
         if (e.type === 'main') {
@@ -112,6 +116,21 @@ export class TimeService {
         return acc;
       },
       { subTotal: [], total: 0 },
+    );
+  }
+
+  private async parseProjects(
+    points: Array<TimePoint & { project?: ProjectEntity }>,
+  ) {
+    return await Promise.all(
+      points.map(async (point) => {
+        if (point.projectId) {
+          point.project = await this.projectRepository.findOne({
+            where: { id: point.projectId },
+          });
+        }
+        return point;
+      }),
     );
   }
 }

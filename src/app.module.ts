@@ -10,6 +10,7 @@ import { TimeModule } from './time/time.module';
 import { UserModule } from './user/user.module';
 import { TeamModule } from './team/team.module';
 import { GoogleAuthService } from './auth/google/google-auth.service';
+import { ProjectsModule } from './projects/projects.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GoogleAuthService } from './auth/google/google-auth.service';
     TimeModule,
     UserModule,
     TeamModule,
+    ProjectsModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleAuthService],

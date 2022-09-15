@@ -1,3 +1,4 @@
+import { ProjectEntity } from 'src/projects/entity/project.entity';
 import { TeamEntity } from 'src/team/entity/team.entity';
 import { TimeEntity } from 'src/time/entities/time.entity.';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
@@ -5,6 +6,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -48,6 +50,9 @@ export class UserEntity {
     nullable: false,
   })
   createdAt: Date;
+
+  @ManyToMany(() => ProjectEntity, (project) => project.users)
+  projects: ProjectEntity[];
 
   @OneToMany(() => TimeEntity, (time) => time.user)
   times: TimeEntity[];
