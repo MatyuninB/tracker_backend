@@ -23,7 +23,7 @@ export class TimeController {
     try {
       return await this.timeService.addTimepoint(req.user, body);
     } catch (e) {
-      return new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -34,7 +34,7 @@ export class TimeController {
       const { date } = query || {};
       return await this.timeService.getTimePoints(req.user.id, date);
     } catch (e) {
-      return new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

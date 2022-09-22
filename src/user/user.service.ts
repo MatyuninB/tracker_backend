@@ -52,4 +52,11 @@ export class UserService {
 
     return `User ${userId} added to team ${team.title}`;
   }
+
+  async getUserInfo(user) {
+    return await this.userRepository.findOne({
+      relations: ['team', 'projects'],
+      where: { id: user.id },
+    });
+  }
 }

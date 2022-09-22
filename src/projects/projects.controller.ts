@@ -24,7 +24,7 @@ export class ProjectsController {
     try {
       return await this.projectsService.getAllProjects();
     } catch (e) {
-      return new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 

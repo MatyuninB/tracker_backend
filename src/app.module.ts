@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { TeamModule } from './team/team.module';
 import { GoogleAuthService } from './auth/google/google-auth.service';
 import { ProjectsModule } from './projects/projects.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProjectsModule } from './projects/projects.module';
     UserModule,
     TeamModule,
     ProjectsModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [AppService, GoogleAuthService],

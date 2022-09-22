@@ -1,8 +1,9 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { config } from 'dotenv';
+import { TaskEntity } from 'src/task/entities/task.entity';
 import { TeamEntity } from 'src/team/entity/team.entity';
-import { TimeEntity } from 'src/time/entities/time.entity.';
+import { TimeEntity } from 'src/time/entities/time.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 
 config();
@@ -24,7 +25,7 @@ export const typeOrmModuleOptions: TypeOrmModuleOptions = {
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  entities: [UserEntity, TeamEntity, TimeEntity],
+  entities: [UserEntity, TeamEntity, TimeEntity, TaskEntity],
   synchronize: true,
   autoLoadEntities: true,
   ...SSL,

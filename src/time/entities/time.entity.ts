@@ -7,7 +7,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 
-export type TimeState = 'start' | 'stop' | 'sub-start' | 'sub-stop';
+export type TimeState = 'start' | 'stop';
 
 export interface TimePoint {
   type: 'main' | 'sub';

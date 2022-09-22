@@ -24,7 +24,7 @@ export class TeamController {
     try {
       return await this.teamSetvice.createTeam(body.title);
     } catch (e) {
-      return new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -34,7 +34,7 @@ export class TeamController {
     try {
       return await this.teamSetvice.getAllTeams();
     } catch (e) {
-      return new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -44,7 +44,7 @@ export class TeamController {
     try {
       return await this.teamSetvice.getTeamWithUsers({ teamId });
     } catch (e) {
-      return new HttpException(e.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
     }
   }
 }

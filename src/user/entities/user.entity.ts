@@ -1,11 +1,13 @@
 import { ProjectEntity } from 'src/projects/entity/project.entity';
+import { TaskEntity } from 'src/task/entities/task.entity';
 import { TeamEntity } from 'src/team/entity/team.entity';
-import { TimeEntity } from 'src/time/entities/time.entity.';
+import { TimeEntity } from 'src/time/entities/time.entity';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -51,7 +53,11 @@ export class UserEntity {
   })
   createdAt: Date;
 
+  @OneToMany(() => TaskEntity, (task) => task.user)
+  tasks: TaskEntity[]
+
   @ManyToMany(() => ProjectEntity, (project) => project.users)
+  @JoinTable()
   projects: ProjectEntity[];
 
   @OneToMany(() => TimeEntity, (time) => time.user)

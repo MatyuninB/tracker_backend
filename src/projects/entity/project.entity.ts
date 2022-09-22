@@ -1,5 +1,12 @@
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
+} from 'typeorm';
 
 @Entity({ name: 'projects' })
 export class ProjectEntity {
@@ -22,5 +29,6 @@ export class ProjectEntity {
   disabled: boolean;
 
   @ManyToMany(() => UserEntity, (user) => user.projects)
+  @JoinTable()
   users: UserEntity[];
 }

@@ -23,8 +23,12 @@ export class UserController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  me(@Req() req) {
-    return req.user;
+  async me(@Req() req) {
+    try {
+      return await this.userSevice.getUserInfo(req.user);
+    } catch (e) {
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @Patch('role')
@@ -37,7 +41,7 @@ export class UserController {
       await this.userSevice.updateUserRole({ userId, role });
       return `role updated ${role}`;
     } catch (e) {
-      return new HttpException(e, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -51,7 +55,7 @@ export class UserController {
         userId,
       });
     } catch (e) {
-      return new HttpException(e, HttpStatus.BAD_REQUEST);
+      throw new HttpException(e, HttpStatus.BAD_REQUEST);
     }
   }
 }

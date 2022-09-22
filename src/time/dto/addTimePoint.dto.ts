@@ -1,18 +1,19 @@
 import { IsDate, IsIn, IsOptional, IsString } from 'class-validator';
-import { TimeState } from '../entities/time.entity.';
+import { TimeState } from '../entities/time.entity';
 
 export class AddTimePointDTO {
-  @IsIn(['main', 'sub'])
-  type: 'main' | 'sub';
+  @IsIn(['main'])
+  type: 'main';
 
-  @IsIn(['start', 'stop', 'pause', 'sub-start', 'sub-stop'])
+  @IsIn(['start', 'stop'])
   state: TimeState;
 
   @IsString()
   time: Date;
 
   @IsString()
-  projectId: number;
+  @IsOptional()
+  projectId?: number;
 
   @IsString()
   @IsOptional()

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
 import { isSameDay } from 'src/helpers/isSameDay';
@@ -7,7 +7,7 @@ import { CalculatedTime } from 'src/type/CalculatedTime.type';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AddTimePointDTO } from './dto/addTimePoint.dto';
-import { TimeEntity, TimePoint } from './entities/time.entity.';
+import { TimeEntity, TimePoint } from './entities/time.entity';
 
 @Injectable()
 export class TimeService {
@@ -22,7 +22,7 @@ export class TimeService {
     let currentTime = await this.timeRepository.findOne({
       relations: ['user'],
       where: {
-        createdAt: isSameDay(),
+        createdAt: isSameDay(data.time),
         user: {
           id: user.id,
         },
@@ -30,7 +30,10 @@ export class TimeService {
     });
 
     if (!currentTime) {
-      currentTime = await this.timeRepository.save({ user });
+      currentTime = await this.timeRepository.save({
+        user,
+        currentTime: data.time,
+      });
     }
 
     this.validatePoint(data, currentTime);
@@ -41,19 +44,22 @@ export class TimeService {
   }
 
   async getTimePoints(id?: number, date?: string) {
-    const result: TimeEntity & { calculatedTime?: CalculatedTime } =
-      await this.timeRepository.findOne({
-        relations: ['user'],
-        where: {
-          createdAt: isSameDay(date),
-          user: {
-            id,
-          },
+    const result: TimeEntity & {
+      calculatedTime?: CalculatedTime;
+      status?: boolean;
+    } = await this.timeRepository.findOne({
+      relations: ['user'],
+      where: {
+        createdAt: isSameDay(date),
+        user: {
+          id,
         },
-      });
+      },
+    });
 
+    if (!result) return { status: false };
     result.calculatedTime = this.countTime(result.time);
-
+    result.status = true;
     return result;
   }
 
@@ -63,60 +69,52 @@ export class TimeService {
     );
     const mainLastPoint = mainPoints[mainPoints.length - 1];
 
-    if (point.type === 'main') {
-      if (!['start', 'stop'].includes(point.state))
-        throw new Error('Wrong type provided!');
+    if (
+      point.state === mainLastPoint?.state ||
+      (!mainLastPoint && point.state === 'stop')
+    )
+      throw new Error('Wrong state provided!');
 
-      if (
-        point.state === mainLastPoint?.state ||
-        (!mainLastPoint && point.state === 'stop')
-      )
-        throw new Error('Wrong state provided!');
-    }
-
-    if (point.type === 'sub') {
-      if (!point.title) {
-        throw new Error('Title required for sub timer!');
-      }
-      if (!['sub-start', 'sub-stop'].includes(point.state))
-        throw new Error('Wrong type provided!');
-
-      const mainPoints = currentTime.time.filter(
-        (point) => point.type === 'sub',
-      );
-      const subLastPoint = mainPoints[mainPoints.length - 1];
-
-      if (
-        point.state === subLastPoint?.state ||
-        mainLastPoint?.state !== 'start' ||
-        (!subLastPoint && point.state === 'sub-stop')
-      )
-        throw new Error('Wrong state provided!');
+    if (!point.title) {
+      throw new Error('Title required for timer!');
     }
   }
 
   private countTime(points: Array<TimePoint>) {
-    return points.reduceRight<CalculatedTime>(
-      (acc, e) => {
-        if (e.type === 'main') {
-          e.state === 'stop'
-            ? (acc.buffer = e.time)
-            : (acc.total += dayjs(acc.buffer).diff(e.time, 'seconds'));
-        }
-        if (e.type === 'sub') {
-          if (e.state === 'sub-stop') {
-            acc.subBuffer = e.time;
-          } else {
-            acc.subTotal.push({
-              time: dayjs(acc.subBuffer).diff(e.time, 'seconds'),
-              title: e.title,
-            });
-          }
-        }
-        return acc;
-      },
-      { subTotal: [], total: 0 },
-    );
+    const pointsMap = points.reduceRight<
+      Map<string, { time?: number; buffer?: Date | string }>
+    >((acc, e) => {
+      const current = acc.get(e.title) || { time: 0, buffer: '' };
+
+      if (e.state === 'stop') {
+        current.buffer = e.time;
+        acc.set(e.title, current);
+      } else {
+        const trackerTime = dayjs(current?.buffer).diff(e.time) || 0;
+
+        current.time = current.time += trackerTime;
+        current.buffer = '';
+        acc.set(e.title, current);
+      }
+      return acc;
+    }, new Map());
+
+    const responce: {
+      total: number;
+      timers: Array<{ title: string; time: number }>;
+    } = {
+      total: 0,
+      timers: [],
+    };
+
+    pointsMap.forEach(({ time }, k) => {
+      responce.timers.push({
+        title: k,
+        time,
+      });
+      responce.total = responce.total += time;
+    });
+    return responce;
   }
 
   private async parseProjects(

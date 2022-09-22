@@ -1,6 +1,6 @@
 export interface CalculatedTime {
   buffer?: string | Date;
   total?: number;
-  subBuffer?: string | Date;
-  subTotal?: Array<{ time: number; title: string }>;
+  subBuffer?: Map<string, { time?: number; lastPoint?: string | Date }>;
+  subTotal?: Array<any>;
 }

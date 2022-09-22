@@ -33,7 +33,7 @@ export class JwtAuthService {
         accessToken: this.jwtService.sign(payload),
       };
     } catch (e) {
-      return new HttpException(e, 404);
+      throw new HttpException(e, 404);
     }
   }
 }
