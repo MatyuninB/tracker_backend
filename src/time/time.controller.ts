@@ -20,21 +20,13 @@ export class TimeController {
   @Post('add')
   @UseGuards(JwtAuthGuard)
   async addTimePoint(@Req() req, @Body() body: AddTimePointDTO) {
-    try {
-      return await this.timeService.addTimepoint(req.user, body);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.timeService.addTimepoint(req.user, body);
   }
 
   @Get('time-point')
   @UseGuards(JwtAuthGuard)
   async getTodayTimePoint(@Req() req, @Query() query) {
-    try {
-      const { date } = query || {};
-      return await this.timeService.getTimePoints(req.user.id, date);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    const { date } = query || {};
+    return await this.timeService.getTimePoints(req.user.id, date);
   }
 }
