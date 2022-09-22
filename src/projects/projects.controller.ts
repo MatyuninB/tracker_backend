@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Patch,
   Post,
   Req,
@@ -21,17 +19,13 @@ export class ProjectsController {
   @Get('all')
   @UseGuards(JwtAuthGuard)
   async getAllProjects() {
-    try {
-      return await this.projectsService.getAllProjects();
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.projectsService.getAllProjects();
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async getProjects(@Req() req) {
-    return await this.projectsService.getProjects(req.user);
+    return await this.projectsService.getProjectsByUserId(req.user.id);
   }
 
   @Post()
@@ -43,8 +37,8 @@ export class ProjectsController {
   @Patch('user')
   @RoleCheck([RoleTypeEnum.MANAGER, RoleTypeEnum.ADMIN])
   async assignUser(
-    @Body() { userId, projectId }: { userId: string; projectId: string },
+    @Body() { userId, projectId }: { userId: number; projectId: number },
   ) {
-    return await this.projectsService.assignUser({ userId, projectId });
+    return await this.projectsService.assignUser(userId, projectId);
   }
 }
