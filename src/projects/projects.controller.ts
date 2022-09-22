@@ -10,6 +10,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import { RoleCheck } from 'src/user/decorators/role.decorator';
+import { AssignUserDTO } from './dto/assign-user.dto';
 import { ProjectDTO } from './dto/projects.dto';
 import { ProjectsService } from './projects.service';
 
@@ -36,9 +37,8 @@ export class ProjectsController {
 
   @Patch('user')
   @RoleCheck([RoleTypeEnum.MANAGER, RoleTypeEnum.ADMIN])
-  async assignUser(
-    @Body() { userId, projectId }: { userId: number; projectId: number },
-  ) {
+  async assignUser(@Body() body: AssignUserDTO) {
+    const { userId, projectId } = body;
     return await this.projectsService.assignUser(userId, projectId);
   }
 }
