@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TeamEntity } from 'src/team/entity/team.entity';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
@@ -16,26 +16,36 @@ export class UserService {
     @InjectRepository(TeamEntity)
     private teamRepository: Repository<TeamEntity>,
   ) {}
+
   async createUser(data: UserDTO) {
+    const user = await this.userRepository.findOne({
+      where: { email: data.email },
+    });
+
+    if (user) {
+      throw new BadRequestException(
+        'A user with the same email already exists',
+      );
+    }
     return await this.userRepository.save(data);
   }
 
   async findUserByEmail({ email }) {
-    return await this.userRepository.findOne({ where: { email } });
+    return await this.userRepository.findOneOrFail({ where: { email } });
   }
 
-  async updateUserRole({
-    userId,
-    role,
-  }: {
-    userId: string;
-    role: RoleTypeEnum;
-  }) {
+  async updateUserRole(userId: number, role: RoleTypeEnum) {
+    await this.userRepository.findOneOrFail({
+      where: { id: userId },
+    });
+
     return await this.userRepository.update(userId, { role });
   }
 
   async assignTeam({ user, teamId, userId }: AssignTeamDTO) {
-    const team = await this.teamRepository.findOne({ where: { id: teamId } });
+    const team = await this.teamRepository.findOneOrFail({
+      where: { id: teamId },
+    });
 
     if (user.role === RoleTypeEnum.MANAGER) {
       const userWithTeam = await this.userRepository.findOne({
@@ -53,8 +63,8 @@ export class UserService {
     return `User ${userId} added to team ${team.title}`;
   }
 
-  async getUserInfo(user) {
-    return await this.userRepository.findOne({
+  async getUserInfo(user: UserEntity) {
+    return await this.userRepository.findOneOrFail({
       relations: ['team', 'projects'],
       where: { id: user.id },
     });

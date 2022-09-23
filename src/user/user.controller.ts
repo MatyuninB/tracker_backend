@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
   Patch,
   Req,
@@ -24,38 +23,25 @@ export class UserController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async me(@Req() req) {
-    try {
-      return await this.userSevice.getUserInfo(req.user);
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
-    }
+    return await this.userSevice.getUserInfo(req.user);
   }
 
   @Patch('role')
   @RoleCheck(RoleTypeEnum.ADMIN)
   @HttpCode(HttpStatus.OK)
   async updateRole(@Req() req, @Body() body: UpdateRoleDTO) {
-    try {
-      const { userId, role } = body;
-
-      await this.userSevice.updateUserRole({ userId, role });
-      return `role updated ${role}`;
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
-    }
+    const { userId, role } = body;
+    await this.userSevice.updateUserRole(userId, role);
+    return `role updated ${role}`;
   }
 
   @Patch('team')
   @RoleCheck([RoleTypeEnum.ADMIN, RoleTypeEnum.MANAGER])
   async assignTeam(@Req() req, @Body() { teamId, userId }: AssignTeamDTO) {
-    try {
-      return await this.userSevice.assignTeam({
-        user: req.user,
-        teamId,
-        userId,
-      });
-    } catch (e) {
-      throw new HttpException(e, HttpStatus.BAD_REQUEST);
-    }
+    return await this.userSevice.assignTeam({
+      user: req.user,
+      teamId,
+      userId,
+    });
   }
 }

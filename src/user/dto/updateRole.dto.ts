@@ -1,6 +1,6 @@
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 
 export interface UpdateRoleDTO {
-  userId: string;
+  userId: number;
   role: RoleTypeEnum;
 }
