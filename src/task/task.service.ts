@@ -17,7 +17,7 @@ export class TaskService {
     const user = await this.userRepository.findOneOrFail({
       where: { id: userId },
     });
-    const task = this.taskRepository.find({ where: { title, user } });
+    const task = await this.taskRepository.findOne({ where: { title, user } });
     if (task) {
       throw new BadRequestException('A task with the same name already exists');
     }
