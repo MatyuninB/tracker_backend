@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
@@ -18,23 +18,34 @@ export class ProjectsService {
     return await this.projectRepository.find();
   }
 
-  async getProjects({ id }) {
+  async getProjectsByUserId(userId: number) {
     return this.projectRepository.find({
       relations: ['users'],
-      where: { users: { id } },
+      where: { users: { id: userId } },
     });
   }
 
   async createProject(data: ProjectDTO) {
+    const project = await this.projectRepository.findOne({
+      where: { title: data.title },
+    });
+
+    if (project) {
+      throw new BadRequestException(
+        'A project with the same name already exists',
+      );
+    }
     await this.projectRepository.save(data);
   }
 
-  async assignUser({ userId, projectId }) {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+  async assignUser(userId: number, projectId: number) {
+    const user = await this.userRepository.findOneOrFail({
+      where: { id: userId },
+    });
     return await this.projectRepository.update(projectId, { users: [user] });
   }
 
-  async disableProject({ projectId }) {
+  async disableProject(projectId: number) {
     return this.projectRepository.update(projectId, { disabled: true });
   }
 }

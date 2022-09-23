@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Patch,
   Post,
   Req,
@@ -12,6 +10,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import { RoleCheck } from 'src/user/decorators/role.decorator';
+import { AssignUserDTO } from './dto/assign-user.dto';
 import { ProjectDTO } from './dto/projects.dto';
 import { ProjectsService } from './projects.service';
 
@@ -21,17 +20,13 @@ export class ProjectsController {
   @Get('all')
   @UseGuards(JwtAuthGuard)
   async getAllProjects() {
-    try {
-      return await this.projectsService.getAllProjects();
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.projectsService.getAllProjects();
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async getProjects(@Req() req) {
-    return await this.projectsService.getProjects(req.user);
+    return await this.projectsService.getProjectsByUserId(req.user.id);
   }
 
   @Post()
@@ -42,9 +37,8 @@ export class ProjectsController {
 
   @Patch('user')
   @RoleCheck([RoleTypeEnum.MANAGER, RoleTypeEnum.ADMIN])
-  async assignUser(
-    @Body() { userId, projectId }: { userId: string; projectId: string },
-  ) {
-    return await this.projectsService.assignUser({ userId, projectId });
+  async assignUser(@Body() body: AssignUserDTO) {
+    const { userId, projectId } = body;
+    return await this.projectsService.assignUser(userId, projectId);
   }
 }
