@@ -11,7 +11,7 @@ export class TeamService {
   ) {}
 
   async createTeam(title: string) {
-    const team = this.teamRepository.findOne({ where: { title } });
+    const team = await this.teamRepository.findOne({ where: { title } });
     if (team) {
       throw new BadRequestException('A team with the same name already exists');
     }
