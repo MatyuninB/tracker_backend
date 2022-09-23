@@ -21,30 +21,18 @@ export class TeamController {
   @Post()
   @RoleCheck(RoleTypeEnum.ADMIN)
   async createTeam(@Body() body: CreateTeamDTO) {
-    try {
-      return await this.teamSetvice.createTeam(body.title);
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.teamSetvice.createTeam(body.title);
   }
 
   @Get('all')
   @UseGuards(JwtAuthGuard)
   async getAllTeams() {
-    try {
-      return await this.teamSetvice.getAllTeams();
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.teamSetvice.getAllTeams();
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async getTeam(@Query() { teamId }) {
-    try {
-      return await this.teamSetvice.getTeamWithUsers({ teamId });
-    } catch (e) {
-      throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this.teamSetvice.getTeamWithUsers(teamId);
   }
 }
