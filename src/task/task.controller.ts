@@ -21,21 +21,19 @@ export class TaskController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Req() { user }, @Body() createTaskDto: CreateTaskDto) {
-    return await this.taskService.create(createTaskDto, user.id);
+    const { title, description } = createTaskDto;
+    return await this.taskService.create(user.id, title, description);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async find(
-    @Req() { user: { id } }: { user: { id: number } },
-    @Query() query: { search: string },
-  ) {
-    return await this.taskService.find({ id, search: query.search });
+  async find(@Req() { user }, @Query() query: { search: string }) {
+    return await this.taskService.findByUserId(user.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete()
   async delete(@Body() body: { id: number }) {
-    return await this.taskService.remove(body.id);
+    return await this.taskService.removeById(body.id);
   }
 }

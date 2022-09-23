@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskEntity } from './entities/task.entity';
 
 @Injectable()
@@ -14,17 +13,23 @@ export class TaskService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async create({ title }: CreateTaskDto, id) {
-    const user = await this.userRepository.findOne({ where: { id } });
-    return await this.taskRepository.save({ title, user });
+  async create(userId: number, title: string, description: string) {
+    const user = await this.userRepository.findOneOrFail({
+      where: { id: userId },
+    });
+    const task = await this.taskRepository.findOne({ where: { title, user } });
+    if (task) {
+      throw new BadRequestException('A task with the same name already exists');
+    }
+    return await this.taskRepository.save({ user, title, description });
   }
 
-  async find({ id, search = '' }: { id: number; search: string }) {
-    return await this.taskRepository.find({ where: { user: { id } } });
+  async findByUserId(userId: number) {
+    return await this.taskRepository.find({ where: { user: { id: userId } } });
   }
 
-  async remove(id: number) {
-    const task = await this.taskRepository.find({ where: { id } });
+  async removeById(id: number) {
+    const task = await this.taskRepository.findOneOrFail({ where: { id } });
     return await this.taskRepository.remove(task);
   }
 }
