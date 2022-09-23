@@ -1,4 +1,4 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as dayjs from 'dayjs';
 import { isSameDay } from 'src/helpers/isSameDay';
@@ -18,27 +18,15 @@ export class TimeService {
     private projectRepository: Repository<ProjectEntity>,
   ) {}
 
-  async addTimepoint(user: UserEntity, data: AddTimePointDTO) {
-    let currentTime = await this.timeRepository.findOne({
-      relations: ['user'],
-      where: {
-        createdAt: isSameDay(data.time),
-        user: {
-          id: user.id,
-        },
-      },
-    });
+  async addTimepoint(user: UserEntity, timePoint: AddTimePointDTO) {
+    const currentTime = await this.findOrCreateCurrentTime(
+      user,
+      timePoint.time,
+    );
 
-    if (!currentTime) {
-      currentTime = await this.timeRepository.save({
-        user,
-        currentTime: data.time,
-      });
-    }
+    this.validatePoint(timePoint, currentTime);
 
-    this.validatePoint(data, currentTime);
-
-    currentTime.time.push(data);
+    currentTime.time.push(timePoint);
 
     return await this.timeRepository.update(currentTime.id, currentTime);
   }
@@ -72,11 +60,8 @@ export class TimeService {
     if (
       point.state === mainLastPoint?.state ||
       (!mainLastPoint && point.state === 'stop')
-    )
-      throw new Error('Wrong state provided!');
-
-    if (!point.title) {
-      throw new Error('Title required for timer!');
+    ) {
+      throw new BadRequestException('Wrong state provided!');
     }
   }
 
@@ -130,5 +115,26 @@ export class TimeService {
         return point;
       }),
     );
+  }
+
+  private async findOrCreateCurrentTime(user: UserEntity, time: Date) {
+    const currentTime = await this.timeRepository.findOne({
+      relations: ['user'],
+      where: {
+        createdAt: isSameDay(time),
+        user: {
+          id: user.id,
+        },
+      },
+    });
+
+    if (!currentTime) {
+      return await this.timeRepository.save({
+        user,
+        currentTime: time,
+      });
+    }
+
+    return currentTime;
   }
 }
