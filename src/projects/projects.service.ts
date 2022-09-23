@@ -26,7 +26,7 @@ export class ProjectsService {
   }
 
   async createProject(data: ProjectDTO) {
-    const project = this.projectRepository.findOne({
+    const project = await this.projectRepository.findOne({
       where: { title: data.title },
     });
 
