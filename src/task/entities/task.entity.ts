@@ -1,17 +1,10 @@
+import { BaseEntity } from 'src/helpers/base-entity.entity';
+import { ProjectEntity } from 'src/projects/entity/project.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  CreateDateColumn,
-} from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'task' })
-export class TaskEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class TaskEntity extends BaseEntity {
   @Column({
     length: 100,
     unique: true,
@@ -23,15 +16,15 @@ export class TaskEntity {
   })
   description: string;
 
-  @CreateDateColumn({
-    name: 'created_at',
-    type: 'timestamp with time zone',
-    default: 'now()',
-    update: false,
-    nullable: false,
+  @ManyToOne(() => UserEntity)
+  @JoinColumn({
+    name: 'user_id',
   })
-  createdAt: Date;
-
-  @ManyToOne(() => UserEntity, (user) => user.tasks)
   user: UserEntity;
+
+  @ManyToOne(() => ProjectEntity)
+  @JoinColumn({
+    name: 'project_id',
+  })
+  project: ProjectEntity;
 }

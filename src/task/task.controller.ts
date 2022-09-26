@@ -3,8 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
-  Param,
   Delete,
   Query,
   Req,
@@ -21,8 +19,13 @@ export class TaskController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(@Req() { user }, @Body() createTaskDto: CreateTaskDto) {
-    const { title, description } = createTaskDto;
-    return await this.taskService.create(user.id, title, description);
+    const { title, description, projectId } = createTaskDto;
+    return await this.taskService.create(
+      user.id,
+      projectId,
+      title,
+      description,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
