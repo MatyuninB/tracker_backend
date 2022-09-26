@@ -1,3 +1,4 @@
+import { BaseEntity } from 'src/helpers/base-entity.entity';
 import { ProjectEntity } from 'src/projects/entity/project.entity';
 import { TaskEntity } from 'src/task/entities/task.entity';
 import { TeamEntity } from 'src/team/entity/team.entity';
@@ -5,20 +6,15 @@ import { TimeEntity } from 'src/time/entities/time.entity';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
-  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity({ name: 'user' })
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class UserEntity extends BaseEntity {
   @Column()
   name: string;
 
@@ -44,17 +40,8 @@ export class UserEntity {
   @Column({ type: 'text', nullable: true })
   avatar: string;
 
-  @CreateDateColumn({
-    name: 'created_at',
-    type: 'timestamp with time zone',
-    default: 'now()',
-    update: false,
-    nullable: false,
-  })
-  createdAt: Date;
-
   @OneToMany(() => TaskEntity, (task) => task.user)
-  tasks: TaskEntity[]
+  tasks: TaskEntity[];
 
   @ManyToMany(() => ProjectEntity, (project) => project.users)
   @JoinTable()

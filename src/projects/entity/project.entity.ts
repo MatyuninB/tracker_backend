@@ -1,17 +1,9 @@
+import { BaseEntity } from 'src/helpers/base-entity.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
-} from 'typeorm';
+import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity({ name: 'projects' })
-export class ProjectEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class ProjectEntity extends BaseEntity {
   @Column({
     length: 100,
     unique: true,

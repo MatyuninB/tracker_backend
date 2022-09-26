@@ -1,11 +1,9 @@
+import { BaseEntity } from 'src/helpers/base-entity.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 
-@Entity({ name: 'teams' })
-export class TeamEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+@Entity({ name: 'team' })
+export class TeamEntity extends BaseEntity {
   @Column({
     length: 100,
     unique: true,
