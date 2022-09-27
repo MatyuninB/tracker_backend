@@ -47,14 +47,28 @@ export class TimePointService {
   async getUserTimePointsByTaskId(
     user: UserEntity,
     taskId: number,
+    startDate?: Date,
+    endDate?: Date,
   ): Promise<TimePointEntity[]> {
     const task = await this.taskRepository.findOneOrFail({
       where: { id: taskId, user: user },
     });
 
-    const timePoints = await this.timePointRepository.find({ where: { task } });
+    if (startDate && endDate) {
+      return await this.timePointRepository.find({
+        where: { task, start: startDate, end: endDate },
+      });
+    } else if (startDate) {
+      return await this.timePointRepository.find({
+        where: { task, start: startDate },
+      });
+    } else if (endDate) {
+      return await this.timePointRepository.find({
+        where: { task, end: endDate },
+      });
+    }
 
-    return timePoints;
+    return await this.timePointRepository.find({ where: { task } });
   }
 
   async getTimePoint(

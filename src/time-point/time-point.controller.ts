@@ -11,6 +11,7 @@ import {
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { AddStartTimePointDTO } from './dto/addStartTimePoint.dto';
 import { AddStopTimePointDTO } from './dto/addStopTimePoint.dto';
+import { GetTimePointsByTaskDTO } from './dto/getTimePointsByTask.dto';
 import { UpdateTimePointDTO } from './dto/updateTimePoint.dto';
 import { TimePointService } from './time-point.service';
 
@@ -40,11 +41,16 @@ export class TimePointController {
 
   @Get('by-user-task')
   @UseGuards(JwtAuthGuard)
-  async getTimePointsByUserTask(@Req() req, @Query() query) {
-    const { taskId } = query || {};
+  async getTimePointsByUserTask(
+    @Req() req,
+    @Query() query: GetTimePointsByTaskDTO,
+  ) {
+    const { taskId, start, end } = query;
     return await this.timeService.getUserTimePointsByTaskId(
       req.user.id,
       taskId,
+      start,
+      end,
     );
   }
 
