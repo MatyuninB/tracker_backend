@@ -2,7 +2,7 @@ import { BaseEntity } from 'src/helpers/base-entity.entity';
 import { ProjectEntity } from 'src/projects/entity/project.entity';
 import { TaskEntity } from 'src/task/entities/task.entity';
 import { TeamEntity } from 'src/team/entity/team.entity';
-import { TimeEntity } from 'src/time/entities/time.entity';
+import { TimePointEntity } from 'src/time-point/entities/time-point.entity';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import {
   Column,
@@ -47,8 +47,8 @@ export class UserEntity extends BaseEntity {
   @JoinTable()
   projects: ProjectEntity[];
 
-  @OneToMany(() => TimeEntity, (time) => time.user)
-  times: TimeEntity[];
+  @OneToMany(() => TimePointEntity, (time) => time.user)
+  times: TimePointEntity[];
 
   @ManyToOne(() => TeamEntity, (team) => team.users)
   team: TeamEntity;

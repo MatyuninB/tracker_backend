@@ -6,7 +6,7 @@ import { AppService } from './app.service';
 import { GoogleOauthModule } from './auth/google/google-auth.module';
 import { JwtAuthModule } from './auth/jwt/jwt-auth.module';
 import { typeOrmModuleOptions } from './config/orm.config';
-import { TimeModule } from './time/time.module';
+import { TimePointModule } from './time-point/time-point.module';
 import { UserModule } from './user/user.module';
 import { TeamModule } from './team/team.module';
 import { GoogleAuthService } from './auth/google/google-auth.service';
@@ -25,7 +25,7 @@ import { TaskModule } from './task/task.module';
     }),
     GoogleOauthModule,
     JwtAuthModule,
-    TimeModule,
+    TimePointModule,
     UserModule,
     TeamModule,
     ProjectsModule,
