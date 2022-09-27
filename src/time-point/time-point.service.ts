@@ -118,7 +118,7 @@ export class TimePointService {
        *  start           end   |  start        end   |   start          end
        *    |__предыдущий__|    |    |__текущий__|    |     |__следующий__|
        *
-       *                      <--больше (страрше по времени)--
+       *                   <--больше (страрше по времени)--
        */
       if (start && end) {
         //Время начала не может быть меньше времени конца
@@ -134,43 +134,40 @@ export class TimePointService {
         }
       }
       if (start) {
-        if (nextTimePoint) {
-          //Время начала не может быть меньше времени начала следующего time point
-          if (new Date(start) < new Date(nextTimePoint.start)) {
-            throw new BadRequestException(
-              'The start time cannot be less than the start time of the next time point',
-            );
-          }
+        //Время начала не может быть меньше времени начала следующего time point
+        if (nextTimePoint && new Date(start) < new Date(nextTimePoint.start)) {
+          throw new BadRequestException(
+            'The start time cannot be less than the start time of the next time point',
+          );
         }
 
-        if (previousTimePoint) {
-          //Время начала не может быть больше времени конца предыдущего time point
-          if (new Date(start) > new Date(previousTimePoint.end)) {
-            throw new BadRequestException(
-              'The start time cannot be greater than the end time of the previous time point',
-            );
-          }
+        //Время начала не может быть больше времени конца предыдущего time point
+        if (
+          previousTimePoint &&
+          new Date(start) > new Date(previousTimePoint.end)
+        ) {
+          throw new BadRequestException(
+            'The start time cannot be greater than the end time of the previous time point',
+          );
         }
 
         timePoint.start = start;
       }
       if (end) {
-        if (nextTimePoint) {
-          //Время конца не может быть меньше времени начала следующего time point
-          if (new Date(end) < new Date(nextTimePoint.start)) {
-            throw new BadRequestException(
-              'The end time cannot be less than the start time of the next time point',
-            );
-          }
+        //Время конца не может быть меньше времени начала следующего time point
+        if (nextTimePoint && new Date(end) < new Date(nextTimePoint.start)) {
+          throw new BadRequestException(
+            'The end time cannot be less than the start time of the next time point',
+          );
         }
-
-        if (previousTimePoint) {
-          //Время конца не может быть больше времени конца предыдущего time point
-          if (new Date(end) > new Date(previousTimePoint.end)) {
-            throw new BadRequestException(
-              'The end time cannot be greater than the end time of the previous time point',
-            );
-          }
+        //Время конца не может быть больше времени конца предыдущего time point
+        if (
+          previousTimePoint &&
+          new Date(end) > new Date(previousTimePoint.end)
+        ) {
+          throw new BadRequestException(
+            'The end time cannot be greater than the end time of the previous time point',
+          );
         }
 
         timePoint.end = end;
