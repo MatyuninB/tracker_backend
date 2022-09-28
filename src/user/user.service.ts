@@ -31,7 +31,7 @@ export class UserService {
   }
 
   async findUserByEmail({ email }) {
-    return await this.userRepository.findOneOrFail({ where: { email } });
+    return await this.userRepository.findOne({ where: { email } });
   }
 
   async updateUserRole(userId: number, role: RoleTypeEnum) {

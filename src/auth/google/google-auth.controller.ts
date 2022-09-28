@@ -6,10 +6,12 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import { GoogleOauthGuard } from './google-auth.guard';
 import { GoogleAuthService } from './google-auth.service';
 
+@ApiTags('Google auth')
 @Controller('auth/google')
 export class GoogleController {
   constructor(private googleAuthService: GoogleAuthService) {}

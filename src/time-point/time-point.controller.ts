@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { AddStartTimePointDTO } from './dto/addStartTimePoint.dto';
 import { AddStopTimePointDTO } from './dto/addStopTimePoint.dto';
@@ -15,11 +16,13 @@ import { GetTimePointsByTaskDTO } from './dto/getTimePointsByTask.dto';
 import { UpdateTimePointDTO } from './dto/updateTimePoint.dto';
 import { TimePointService } from './time-point.service';
 
-@Controller('time')
+@ApiTags('Time Point')
+@Controller('time-point')
 export class TimePointController {
   constructor(private timeService: TimePointService) {}
 
   @Post('add-start')
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async addStartTimepoint(@Req() req, @Body() body: AddStartTimePointDTO) {
     const { time, taskId, title, description } = body;
@@ -33,6 +36,7 @@ export class TimePointController {
   }
 
   @Post('add-stop')
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async addStopTimepoint(@Req() req, @Body() body: AddStopTimePointDTO) {
     const { time, taskId } = body;
@@ -40,6 +44,7 @@ export class TimePointController {
   }
 
   @Get('by-user-task')
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async getTimePointsByUserTask(
     @Req() req,
@@ -55,6 +60,7 @@ export class TimePointController {
   }
 
   @Get()
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async getTimePoint(@Req() req, @Query() query) {
     const { timePointId } = query || {};
@@ -62,6 +68,7 @@ export class TimePointController {
   }
 
   @Patch('update')
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async updateTimePoint(@Req() req, @Body() body: UpdateTimePointDTO) {
     const { timePointId, title, description, start, end } = body;
