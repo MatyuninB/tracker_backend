@@ -17,4 +17,11 @@
 
 ---
 
-Swager : https://tracker.ru:3000/api
+## Swagger
+
+`https://tracker.ru:3000/api`
+
+Для начала переходим в браузере по `https://tracker.ru:3000/auth/google`, авторизуемся через гугл и далее
+после редиректа копируем токен из строки адреса.
+`https://tracker.ru:8080/?token=eyJhbG......`
+Этот токен потом используем в swagger.
