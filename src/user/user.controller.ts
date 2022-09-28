@@ -8,6 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 
@@ -16,17 +17,20 @@ import { AssignTeamDTO } from './dto/assignTeam.dto';
 import { UpdateRoleDTO } from './dto/updateRole.dto';
 import { UserService } from './user.service';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private userSevice: UserService) {}
 
   @Get('me')
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async me(@Req() req) {
     return await this.userSevice.getUserInfo(req.user);
   }
 
   @Patch('role')
+  @ApiBearerAuth('access-token')
   @RoleCheck(RoleTypeEnum.ADMIN)
   @HttpCode(HttpStatus.OK)
   async updateRole(@Req() req, @Body() body: UpdateRoleDTO) {
@@ -36,6 +40,7 @@ export class UserController {
   }
 
   @Patch('team')
+  @ApiBearerAuth('access-token')
   @RoleCheck([RoleTypeEnum.ADMIN, RoleTypeEnum.MANAGER])
   async assignTeam(@Req() req, @Body() { teamId, userId }: AssignTeamDTO) {
     return await this.userSevice.assignTeam({
