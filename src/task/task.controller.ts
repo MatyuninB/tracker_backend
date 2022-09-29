@@ -12,6 +12,7 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { IdDto } from './dto/body-id.dto';
 
 @ApiTags('Task')
 @Controller('task')
@@ -34,14 +35,14 @@ export class TaskController {
   @UseGuards(JwtAuthGuard)
   @Get()
   @ApiBearerAuth('access-token')
-  async find(@Req() { user }, @Query() query: { search: string }) {
+  async find(@Req() { user }) {
     return await this.taskService.findByUserId(user.id);
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete()
   @ApiBearerAuth('access-token')
-  async delete(@Body() body: { id: number }) {
+  async delete(@Body() body: IdDto) {
     return await this.taskService.removeById(body.id);
   }
 }

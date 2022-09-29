@@ -18,32 +18,31 @@ import { UpdateRoleDTO } from './dto/updateRole.dto';
 import { UserService } from './user.service';
 
 @ApiTags('User')
+@ApiBearerAuth('access-token')
 @Controller('user')
 export class UserController {
-  constructor(private userSevice: UserService) {}
+  constructor(private userService: UserService) {}
 
   @Get('me')
-  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async me(@Req() req) {
-    return await this.userSevice.getUserInfo(req.user);
+    return await this.userService.getUserInfo(req.user);
   }
 
   @Patch('role')
-  @ApiBearerAuth('access-token')
   @RoleCheck(RoleTypeEnum.ADMIN)
   @HttpCode(HttpStatus.OK)
   async updateRole(@Req() req, @Body() body: UpdateRoleDTO) {
     const { userId, role } = body;
-    await this.userSevice.updateUserRole(userId, role);
+    await this.userService.updateUserRole(userId, role);
     return `role updated ${role}`;
   }
 
   @Patch('team')
-  @ApiBearerAuth('access-token')
   @RoleCheck([RoleTypeEnum.ADMIN, RoleTypeEnum.MANAGER])
+  @HttpCode(HttpStatus.OK)
   async assignTeam(@Req() req, @Body() { teamId, userId }: AssignTeamDTO) {
-    return await this.userSevice.assignTeam({
+    return await this.userService.assignTeam({
       user: req.user,
       teamId,
       userId,
