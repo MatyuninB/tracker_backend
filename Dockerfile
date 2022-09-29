@@ -1,35 +1,15 @@
-FROM node:lts-alpine AS dist
+FROM node:16.14.0-alpine
+# PLATFORM: linux/arm64
+WORKDIR /backApp
 
-COPY package.json yarn.lock ./
+COPY . .
 
-RUN yarn install
+RUN yarn global add nestjs
 
-COPY . ./
+RUN yarn 
 
-RUN yarn build
+VOLUME [ "/backApp" ]
 
+EXPOSE 3000
 
-FROM node:lts-alpine AS node_modules
-
-COPY package.json yarn.lock ./
-
-RUN yarn install --prod
-
-
-FROM node:lts-alpine
-
-RUN mkdir -p /usr/src/app
-
-WORKDIR /usr/src/app
-
-COPY --from=dist dist /usr/src/app/dist
-
-COPY --from=node_modules node_modules /usr/src/app/node_modules
-
-COPY . /usr/src/app
-
-RUN yarn add global nestjs
-
-EXPOSE $PORT
-
-CMD ["yarn", "start:prod" ]
+CMD [ "yarn", "start" ]
