@@ -26,6 +26,12 @@ export class TimePointEntity extends BaseEntity {
   @Column({ type: 'timestamptz', nullable: true, default: null })
   end: Date | null;
 
+  @Column({ nullable: true })
+  task_id: number;
+
+  @Column({ nullable: true })
+  user_id: number;
+
   @ManyToOne(() => TaskEntity)
   @JoinColumn({
     name: 'task_id',

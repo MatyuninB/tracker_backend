@@ -19,6 +19,9 @@ export class ProjectEntity extends BaseEntity {
   @Column({ default: false })
   disabled: boolean;
 
+  @Column({ nullable: true })
+  user_id: number;
+
   @ManyToMany(() => UserEntity, (user) => user.projects)
   @JoinTable()
   users: UserEntity[];

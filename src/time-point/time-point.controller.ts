@@ -63,7 +63,7 @@ export class TimePointController {
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   async getTimePoint(@Req() req, @Query() query) {
-    const { timePointId } = query || {};
+    const { timePointId } = query;
     return await this.timeService.getTimePoint(req.user, timePointId);
   }
 

@@ -16,6 +16,12 @@ export class TaskEntity extends BaseEntity {
   })
   description: string;
 
+  @Column({ nullable: true })
+  user_id: number;
+
+  @Column({ nullable: true })
+  project_id: number;
+
   @ManyToOne(() => UserEntity)
   @JoinColumn({
     name: 'user_id',
