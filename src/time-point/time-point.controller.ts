@@ -8,7 +8,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt-auth.guard';
 import { AddStartTimePointDTO } from './dto/addStartTimePoint.dto';
 import { AddStopTimePointDTO } from './dto/addStopTimePoint.dto';
@@ -23,7 +23,8 @@ import { TimePointService } from './time-point.service';
 export class TimePointController {
   constructor(private timeService: TimePointService) {}
 
-  @Post('add-start')
+  @ApiOperation({ summary: 'Начать отсчёт времени' })
+  @Post('start')
   @UseGuards(JwtAuthGuard)
   async addStartTimepoint(@Req() req, @Body() body: AddStartTimePointDTO) {
     const { time, taskId, title, description } = body;
@@ -36,16 +37,18 @@ export class TimePointController {
     );
   }
 
-  @Post('add-stop')
+  @ApiOperation({ summary: 'Отсановить отсчёт времени' })
+  @Post('stop')
   @UseGuards(JwtAuthGuard)
   async addStopTimepoint(@Req() req, @Body() body: AddStopTimePointDTO) {
     const { time, taskId } = body;
     return await this.timeService.addStopTimepoint(req.user, time, taskId);
   }
 
-  @Get('by-user-task')
+  @ApiOperation({ summary: 'Вернуть тайм поинты по таске' })
+  @Get('by-task')
   @UseGuards(JwtAuthGuard)
-  async getTimePointsByUserTask(
+  async getTimePointsByTask(
     @Req() req,
     @Query() query: GetTimePointsByTaskDTO,
   ) {
@@ -58,13 +61,26 @@ export class TimePointController {
     );
   }
 
-  @Get()
+  @ApiOperation({ summary: 'Вернуть тайм поинты юзера' })
+  @Get('by-user')
+  @UseGuards(JwtAuthGuard)
+  async getTimePointsByUser(
+    @Req() req,
+    @Query() query: GetTimePointsByTaskDTO,
+  ) {
+    const { start, end } = query;
+    return await this.timeService.getUserTimePoints(req.user.id, start, end);
+  }
+
+  @ApiOperation({ summary: 'Вернуть тайм поинт по ID' })
+  @Get('/id')
   @UseGuards(JwtAuthGuard)
   async getTimePoint(@Req() req, @Query() query: TimePointIdDto) {
     const { timePointId } = query;
     return await this.timeService.getTimePoint(req.user, timePointId);
   }
 
+  @ApiOperation({ summary: 'Обновить тайм поинт' })
   @Patch('update')
   @UseGuards(JwtAuthGuard)
   async updateTimePoint(@Req() req, @Body() body: UpdateTimePointDTO) {

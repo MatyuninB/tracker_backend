@@ -4,7 +4,7 @@ import { IsNumber, IsString } from 'class-validator';
 export class AddStopTimePointDTO {
   @ApiProperty({
     type: Date,
-    example: 'some Date',
+    example: '2022-09-28 12:40:41.699151+00',
   })
   @IsString()
   time: Date;

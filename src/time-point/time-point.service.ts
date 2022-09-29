@@ -92,6 +92,31 @@ export class TimePointService {
     await this.timePointRepository.update(lastTaskTimePoint.id, { end: time });
   }
 
+  async getUserTimePoints(
+    user: UserEntity,
+    startDate?: Date,
+    endDate?: Date,
+  ): Promise<TimePointEntity[]> {
+    if (startDate && endDate) {
+      return await this.timePointRepository.find({
+        where: { user_id: user.id, start: startDate, end: endDate },
+      });
+    } else if (startDate) {
+      return await this.timePointRepository.find({
+        where: { user_id: user.id, start: startDate },
+      });
+    } else if (endDate) {
+      return await this.timePointRepository.find({
+        where: { user_id: user.id, end: endDate },
+      });
+    }
+
+    return await this.timePointRepository.find({
+      where: { user_id: user.id },
+      order: { start: 'ASC' },
+    });
+  }
+
   async getUserTimePointsByTaskId(
     user: UserEntity,
     taskId: number,

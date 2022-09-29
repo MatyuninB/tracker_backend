@@ -12,6 +12,7 @@ export class UpdateTimePointDTO {
   @ApiProperty({
     type: String,
     example: 'some title',
+    required: false,
   })
   @IsString()
   @IsOptional()
@@ -20,6 +21,7 @@ export class UpdateTimePointDTO {
   @ApiProperty({
     type: String,
     example: 'some description',
+    required: false,
   })
   @IsString()
   @IsOptional()
@@ -27,7 +29,8 @@ export class UpdateTimePointDTO {
 
   @ApiProperty({
     type: Date,
-    example: 'some Date',
+    example: '2022-09-28 12:40:41.699151+00',
+    required: false,
   })
   @IsString()
   @IsOptional()
@@ -35,7 +38,8 @@ export class UpdateTimePointDTO {
 
   @ApiProperty({
     type: Date,
-    example: 'some Date',
+    example: '2022-09-28 12:40:41.699151+00',
+    required: false,
   })
   @IsString()
   @IsOptional()

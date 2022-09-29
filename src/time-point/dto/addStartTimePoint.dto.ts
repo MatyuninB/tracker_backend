@@ -4,7 +4,7 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 export class AddStartTimePointDTO {
   @ApiProperty({
     type: Date,
-    example: 'some Date',
+    example: '2022-09-28 12:40:41.699151+00',
   })
   @IsString()
   time: Date;
@@ -19,6 +19,7 @@ export class AddStartTimePointDTO {
   @ApiProperty({
     type: String,
     example: 'some description',
+    required: false,
   })
   @IsString()
   @IsOptional()

@@ -1,14 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class GetTimePointsByTaskDTO {
-  @ApiProperty({
-    type: Number,
-    example: 1,
-  })
-  @IsNumber()
-  taskId: number;
-
   @ApiProperty({
     type: Date,
     example: '2022-09-28 12:40:41.699151+00',
