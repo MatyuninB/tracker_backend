@@ -61,7 +61,7 @@ export class TimePointController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async getTimePoint(@Req() req, @Query() query: TimePointIdDto) {
-    const { timePointId } = query || {};
+    const { timePointId } = query;
     return await this.timeService.getTimePoint(req.user, timePointId);
   }
 

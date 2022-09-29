@@ -13,6 +13,15 @@ export class UserProjectEntity extends BaseEntity {
   })
   role: ProjectRoleTypeEnum;
 
+  @Column({ nullable: true })
+  project_id: number;
+
+  @Column({ nullable: true })
+  user_id: number;
+
+  @Column({ nullable: true })
+  inviter_id: number;
+
   @ManyToOne(() => ProjectEntity)
   @JoinColumn({
     name: 'project_id',

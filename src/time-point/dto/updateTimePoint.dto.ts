@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateTimePointDTO {
   @ApiProperty({
@@ -14,6 +14,7 @@ export class UpdateTimePointDTO {
     example: 'some title',
   })
   @IsString()
+  @IsOptional()
   title?: string;
 
   @ApiProperty({
@@ -21,6 +22,7 @@ export class UpdateTimePointDTO {
     example: 'some description',
   })
   @IsString()
+  @IsOptional()
   description?: string;
 
   @ApiProperty({
@@ -28,6 +30,7 @@ export class UpdateTimePointDTO {
     example: 'some Date',
   })
   @IsString()
+  @IsOptional()
   start?: Date;
 
   @ApiProperty({
@@ -35,5 +38,6 @@ export class UpdateTimePointDTO {
     example: 'some Date',
   })
   @IsString()
+  @IsOptional()
   end?: Date;
 }
