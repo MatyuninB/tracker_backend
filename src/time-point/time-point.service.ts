@@ -34,13 +34,18 @@ export class TimePointService {
       throw new BadRequestException('Timepoint with this title already exists');
     }
 
-    const lastTimePoint = await this.timePointRepository.findOne({
+    const lastUserTimePoint = await this.timePointRepository.findOne({
       order: { end: 'DESC' },
-      where: { user_id: user.id, task_id: taskId },
+      where: { user_id: user.id },
     });
 
+    //  Если последний тайм поинт ещё не остановлен
+    if (!lastUserTimePoint.end) {
+      throw new BadRequestException('Last time point not stopped');
+    }
+
     //  Тайм поинт не может быть старше прошлого таймпоинта
-    if (lastTimePoint && new Date(time) < new Date(lastTimePoint.end)) {
+    if (lastUserTimePoint && new Date(time) < new Date(lastUserTimePoint.end)) {
       throw new BadRequestException(
         'Time point cannot be earlier than the past',
       );
@@ -62,24 +67,29 @@ export class TimePointService {
       where: { id: taskId, user_id: user.id },
     });
 
-    const lastTimePoint = await this.timePointRepository.findOne({
+    const lastUserTimePoint = await this.timePointRepository.findOne({
+      order: { end: 'DESC' },
+      where: { user_id: user.id },
+    });
+
+    const lastTaskTimePoint = await this.timePointRepository.findOne({
       order: { end: 'DESC' },
       where: { user_id: user.id, task_id: task.id },
     });
 
-    //  Если последний тайм поинт уже остановлен
-    if (lastTimePoint.end) {
+    //  Если последний тайм поинт в таске уже остановлен
+    if (lastTaskTimePoint.end) {
       throw new BadRequestException('Time point has been stopped');
     }
 
-    //  Дата окончания временной точки не может быть раньше даты начала.
-    if (new Date(lastTimePoint.start) < new Date(time)) {
+    //  Дата окончания временной точки не может быть раньше даты начала прошлой
+    if (new Date(lastUserTimePoint.start) < new Date(time)) {
       throw new BadRequestException(
-        'The end date of a time point cannot be earlier than the start date',
+        'The end date of the time point cannot be earlier than the start date of the last',
       );
     }
 
-    await this.timePointRepository.update(lastTimePoint.id, { end: time });
+    await this.timePointRepository.update(lastTaskTimePoint.id, { end: time });
   }
 
   async getUserTimePointsByTaskId(
@@ -148,18 +158,18 @@ export class TimePointService {
         throw new BadRequestException('The time point hasnt stopped yet.');
       }
 
-      const taskTimePoints: TimePointEntity[] =
-        await this.getUserTimePointsByTaskId(user, currentTimePoint.task_id);
+      const userTaskTimePoints: TimePointEntity[] =
+        await this.timePointRepository.find({ where: { user_id: user.id } });
 
-      const timePointIndexInArr = taskTimePoints.findIndex(
+      const timePointIndexInArr = userTaskTimePoints.findIndex(
         (timePoint) => timePoint.id === timePointId,
       );
 
-      const previousTimePoint: TimePointEntity | undefined =
-        taskTimePoints[timePointIndexInArr - 1];
+      const previousUserTimePoint: TimePointEntity | undefined =
+        userTaskTimePoints[timePointIndexInArr - 1];
 
-      const nextTimePoint: TimePointEntity | undefined =
-        taskTimePoints[timePointIndexInArr + 1];
+      const nextUserTimePoint: TimePointEntity | undefined =
+        userTaskTimePoints[timePointIndexInArr + 1];
 
       /**
        *  start           end   |  start        end   |   start          end
@@ -189,8 +199,8 @@ export class TimePointService {
 
         //  Время начала не может быть меньше времени конца предыдущего time point
         if (
-          previousTimePoint &&
-          new Date(start) < new Date(previousTimePoint.end)
+          previousUserTimePoint &&
+          new Date(start) < new Date(previousUserTimePoint.end)
         ) {
           throw new BadRequestException(
             'The start time cannot be less than the end time of the previous time point',
@@ -201,7 +211,10 @@ export class TimePointService {
       }
       if (end) {
         //  Время конца не может быть больше времени начала следующего time point
-        if (nextTimePoint && new Date(end) > new Date(nextTimePoint.start)) {
+        if (
+          nextUserTimePoint &&
+          new Date(end) > new Date(nextUserTimePoint.start)
+        ) {
           throw new BadRequestException(
             'The end time cannot be greater than the start time of these points in time',
           );
