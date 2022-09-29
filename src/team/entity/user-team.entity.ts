@@ -1,7 +1,7 @@
+import { BaseEntity } from 'src/helpers/base-entity.entity';
 import { TeamRoleTypeEnum } from 'src/type/TeamRoleTypeEnum';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { BaseEntity } from 'typeorm/repository/BaseEntity';
 import { TeamEntity } from './team.entity';
 
 @Entity({ name: 'user-team' })
@@ -12,6 +12,15 @@ export class UserTeamEntity extends BaseEntity {
     nullable: false,
   })
   role: TeamRoleTypeEnum;
+
+  @Column({ nullable: true })
+  team_id: number;
+
+  @Column({ nullable: true })
+  user_id: number;
+
+  @Column({ nullable: true })
+  inviter_id: number;
 
   @ManyToOne(() => TeamEntity)
   @JoinColumn({

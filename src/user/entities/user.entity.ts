@@ -49,7 +49,4 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => TimePointEntity, (time) => time.user)
   times: TimePointEntity[];
-
-  @ManyToOne(() => TeamEntity, (team) => team.users)
-  team: TeamEntity;
 }

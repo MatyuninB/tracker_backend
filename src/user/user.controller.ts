@@ -38,14 +38,14 @@ export class UserController {
     return `role updated ${role}`;
   }
 
-  @Patch('team')
-  @RoleCheck([RoleTypeEnum.ADMIN, RoleTypeEnum.MANAGER])
-  @HttpCode(HttpStatus.OK)
-  async assignTeam(@Req() req, @Body() { teamId, userId }: AssignTeamDTO) {
-    return await this.userService.assignTeam({
-      user: req.user,
-      teamId,
-      userId,
-    });
-  }
+  // @Patch('team')
+  // @RoleCheck([RoleTypeEnum.ADMIN, RoleTypeEnum.MANAGER])
+  // @HttpCode(HttpStatus.OK)
+  // async assignTeam(@Req() req, @Body() { teamId, userId }: AssignTeamDTO) {
+  //   return await this.userService.assignTeam({
+  //     user: req.user,
+  //     teamId,
+  //     userId,
+  //   });
+  // }
 }

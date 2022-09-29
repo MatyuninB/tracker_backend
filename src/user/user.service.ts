@@ -42,30 +42,30 @@ export class UserService {
     return await this.userRepository.update(userId, { role });
   }
 
-  async assignTeam({ user, teamId, userId }: AssignTeamDTO) {
-    const team = await this.teamRepository.findOneOrFail({
-      where: { id: teamId },
-    });
+  // async assignTeam({ user, teamId, userId }: AssignTeamDTO) {
+  //   const team = await this.teamRepository.findOneOrFail({
+  //     where: { id: teamId },
+  //   });
 
-    if (user.role === RoleTypeEnum.MANAGER) {
-      const userWithTeam = await this.userRepository.findOne({
-        relations: ['team'],
-        where: { id: user.id },
-      });
+  //   if (user.role === RoleTypeEnum.MANAGER) {
+  //     const userWithTeam = await this.userRepository.findOne({
+  //       relations: ['team'],
+  //       where: { id: user.id },
+  //     });
 
-      if (userWithTeam?.team.id !== teamId) {
-        throw new Error('Manager should be in the same team!');
-      }
-    }
+  //     if (userWithTeam?.team.id !== teamId) {
+  //       throw new Error('Manager should be in the same team!');
+  //     }
+  //   }
 
-    await this.userRepository.update(userId, { team });
+  //   await this.userRepository.update(userId, { team });
 
-    return `User ${userId} added to team ${team.title}`;
-  }
+  //   return `User ${userId} added to team ${team.title}`;
+  // }
 
   async getUserInfo(user: UserEntity) {
     return await this.userRepository.findOneOrFail({
-      relations: ['team', 'projects'],
+      relations: ['projects'],
       where: { id: user.id },
     });
   }

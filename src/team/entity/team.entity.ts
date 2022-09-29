@@ -1,6 +1,5 @@
 import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column } from 'typeorm';
 
 @Entity({ name: 'team' })
 export class TeamEntity extends BaseEntity {
@@ -10,6 +9,9 @@ export class TeamEntity extends BaseEntity {
   })
   title: string;
 
-  @OneToMany(() => UserEntity, (user) => user.team)
-  users: UserEntity[];
+  @Column({
+    length: 1000,
+    unique: true,
+  })
+  description: string;
 }
