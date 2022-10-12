@@ -1,21 +1,20 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TaskEntity } from 'src/task/entities/task.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
-import { TimePointEntity } from './entities/time-point.entity';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
+import { TaskRepositoryInterface } from 'src/task/interface/task.repository.interface';
+import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { TimePointTypeormEntity } from './entities/time-point.typeorm.entity';
+import { TimePointRepositoryInterface } from './interface/timepoint.repository.interface';
 
 @Injectable()
 export class TimePointService {
   constructor(
-    @InjectRepository(TimePointEntity)
-    private timePointRepository: Repository<TimePointEntity>,
-    @InjectRepository(TaskEntity)
-    private taskRepository: Repository<TaskEntity>,
+    @Inject('TimePointRepositoryInterface')
+    private readonly timePointRepository: TimePointRepositoryInterface,
+    @Inject('TaskRepositoryInterface')
+    private readonly taskRepository: TaskRepositoryInterface,
   ) {}
 
   async addStartTimepoint(
-    user: UserEntity,
+    user: UserTypeormEntity,
     time: Date,
     taskId: number,
     title: string,
@@ -62,7 +61,7 @@ export class TimePointService {
     await this.timePointRepository.save(timePoint);
   }
 
-  async addStopTimepoint(user: UserEntity, time: Date, taskId: number) {
+  async addStopTimepoint(user: UserTypeormEntity, time: Date, taskId: number) {
     const task = await this.taskRepository.findOneOrFail({
       where: { id: taskId, user_id: user.id },
     });
@@ -93,10 +92,10 @@ export class TimePointService {
   }
 
   async getUserTimePoints(
-    user: UserEntity,
+    user: UserTypeormEntity,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointEntity[]> {
+  ): Promise<TimePointTypeormEntity[]> {
     if (startDate && endDate) {
       return await this.timePointRepository.find({
         where: { user_id: user.id, start: startDate, end: endDate },
@@ -118,11 +117,11 @@ export class TimePointService {
   }
 
   async getUserTimePointsByTaskId(
-    user: UserEntity,
+    user: UserTypeormEntity,
     taskId: number,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointEntity[]> {
+  ): Promise<TimePointTypeormEntity[]> {
     const task = await this.taskRepository.findOneOrFail({
       where: { id: taskId, user_id: user.id },
     });
@@ -148,9 +147,9 @@ export class TimePointService {
   }
 
   async getTimePoint(
-    user: UserEntity,
+    user: UserTypeormEntity,
     timePointId: number,
-  ): Promise<TimePointEntity> {
+  ): Promise<TimePointTypeormEntity> {
     const timePoint = await this.timePointRepository.findOneOrFail({
       where: { id: timePointId, user_id: user.id },
     });
@@ -159,13 +158,13 @@ export class TimePointService {
   }
 
   async updateTimePoint(
-    user: UserEntity,
+    user: UserTypeormEntity,
     timePointId: number,
     title?: string,
     description?: string,
     start?: Date,
     end?: Date,
-  ): Promise<TimePointEntity> {
+  ): Promise<TimePointTypeormEntity> {
     const currentTimePoint = await this.timePointRepository.findOneOrFail({
       where: { id: timePointId, user_id: user.id },
     });
@@ -183,17 +182,17 @@ export class TimePointService {
         throw new BadRequestException('The time point hasnt stopped yet.');
       }
 
-      const userTaskTimePoints: TimePointEntity[] =
+      const userTaskTimePoints: TimePointTypeormEntity[] =
         await this.timePointRepository.find({ where: { user_id: user.id } });
 
       const timePointIndexInArr = userTaskTimePoints.findIndex(
         (timePoint) => timePoint.id === timePointId,
       );
 
-      const previousUserTimePoint: TimePointEntity | undefined =
+      const previousUserTimePoint: TimePointTypeormEntity | undefined =
         userTaskTimePoints[timePointIndexInArr - 1];
 
-      const nextUserTimePoint: TimePointEntity | undefined =
+      const nextUserTimePoint: TimePointTypeormEntity | undefined =
         userTaskTimePoints[timePointIndexInArr + 1];
 
       /**

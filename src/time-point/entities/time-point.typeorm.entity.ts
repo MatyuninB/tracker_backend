@@ -1,10 +1,10 @@
 import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { TaskEntity } from 'src/task/entities/task.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { TaskTypeormEntity } from 'src/task/entities/task.typeorm.entity';
+import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'time-point' })
-export class TimePointEntity extends BaseEntity {
+export class TimePointTypeormEntity extends BaseEntity {
   @Column({
     length: 100,
     unique: true,
@@ -32,15 +32,15 @@ export class TimePointEntity extends BaseEntity {
   @Column({ nullable: true })
   user_id: number;
 
-  @ManyToOne(() => TaskEntity)
+  @ManyToOne(() => TaskTypeormEntity)
   @JoinColumn({
     name: 'task_id',
   })
-  task: TaskEntity;
+  task: TaskTypeormEntity;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserTypeormEntity)
   @JoinColumn({
     name: 'user_id',
   })
-  user: UserEntity;
+  user: UserTypeormEntity;
 }

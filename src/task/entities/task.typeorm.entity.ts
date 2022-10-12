@@ -1,10 +1,10 @@
 import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { ProjectEntity } from 'src/projects/entity/project.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { ProjectTypeormEntity } from 'src/projects/entity/project.typeorm.entity';
+import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'task' })
-export class TaskEntity extends BaseEntity {
+export class TaskTypeormEntity extends BaseEntity {
   @Column({
     length: 100,
     unique: true,
@@ -22,15 +22,15 @@ export class TaskEntity extends BaseEntity {
   @Column({ nullable: true })
   project_id: number;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserTypeormEntity)
   @JoinColumn({
     name: 'user_id',
   })
-  user: UserEntity;
+  user: UserTypeormEntity;
 
-  @ManyToOne(() => ProjectEntity)
+  @ManyToOne(() => ProjectTypeormEntity)
   @JoinColumn({
     name: 'project_id',
   })
-  project: ProjectEntity;
+  project: ProjectTypeormEntity;
 }

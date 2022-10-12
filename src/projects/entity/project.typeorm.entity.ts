@@ -1,9 +1,9 @@
 import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
 import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity({ name: 'projects' })
-export class ProjectEntity extends BaseEntity {
+export class ProjectTypeormEntity extends BaseEntity {
   @Column({
     length: 100,
     unique: true,
@@ -22,7 +22,7 @@ export class ProjectEntity extends BaseEntity {
   @Column({ nullable: true })
   user_id: number;
 
-  @ManyToMany(() => UserEntity, (user) => user.projects)
+  @ManyToMany(() => UserTypeormEntity, (user) => user.projects)
   @JoinTable()
-  users: UserEntity[];
+  users: UserTypeormEntity[];
 }

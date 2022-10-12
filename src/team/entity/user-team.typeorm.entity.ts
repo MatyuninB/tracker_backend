@@ -1,11 +1,11 @@
 import { BaseEntity } from 'src/helpers/base-entity.entity';
 import { TeamRoleTypeEnum } from 'src/type/TeamRoleTypeEnum';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { TeamEntity } from './team.entity';
+import { TeamTypeormEntity } from './team.typeorm.entity';
 
 @Entity({ name: 'user-team' })
-export class UserTeamEntity extends BaseEntity {
+export class UserTeamTypeormEntity extends BaseEntity {
   @Column({
     type: 'enum',
     enum: TeamRoleTypeEnum,
@@ -22,21 +22,21 @@ export class UserTeamEntity extends BaseEntity {
   @Column({ nullable: true })
   inviter_id: number;
 
-  @ManyToOne(() => TeamEntity)
+  @ManyToOne(() => TeamTypeormEntity)
   @JoinColumn({
     name: 'team_id',
   })
-  team: TeamEntity;
+  team: TeamTypeormEntity;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserTypeormEntity)
   @JoinColumn({
     name: 'user_id',
   })
-  user: UserEntity;
+  user: UserTypeormEntity;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserTypeormEntity)
   @JoinColumn({
     name: 'inviter_id',
   })
-  inviter: UserEntity;
+  inviter: UserTypeormEntity;
 }

@@ -1,20 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TeamEntity } from 'src/team/entity/team.entity';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
-import { Repository } from 'typeorm';
-import { AssignTeamDTO } from './dto/assignTeam.dto';
 import { UserDTO } from './dto/user.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserTypeormEntity } from './entities/user.typeorm.entity';
+import { UserRepositoryInterface } from './interface/user.repository.interface';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
-
-    @InjectRepository(TeamEntity)
-    private teamRepository: Repository<TeamEntity>,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface, // @InjectRepository(TeamTypeormEntity) // private teamRepository: Repository<TeamTypeormEntity>,
   ) {}
 
   async createUser(data: UserDTO) {
@@ -63,7 +57,7 @@ export class UserService {
   //   return `User ${userId} added to team ${team.title}`;
   // }
 
-  async getUserInfo(user: UserEntity) {
+  async getUserInfo(user: UserTypeormEntity) {
     return await this.userRepository.findOneOrFail({
       relations: ['projects'],
       where: { id: user.id },

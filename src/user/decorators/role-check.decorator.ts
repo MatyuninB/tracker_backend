@@ -2,7 +2,7 @@ import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
-import { UserEntity } from '../entities/user.entity';
+import { UserTypeormEntity } from '../entities/user.typeorm.entity';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
@@ -16,7 +16,7 @@ export class RoleGuard implements CanActivate {
       return true;
     }
     const request = context.switchToHttp().getRequest();
-    const user = <UserEntity>request.user;
+    const user = <UserTypeormEntity>request.user;
     if (!roles.includes(user.role)) {
       throw new UnauthorizedException(`Allowed for users with role ${roles}`);
     }

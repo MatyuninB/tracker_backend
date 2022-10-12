@@ -1,19 +1,17 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ProjectEntity } from 'src/projects/entity/project.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
-import { TaskEntity } from './entities/task.entity';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { ProjectRepositoryInterface } from 'src/projects/interface/project.repository.interface';
+import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
+import { TaskRepositoryInterface } from './interface/task.repository.interface';
 
 @Injectable()
 export class TaskService {
   constructor(
-    @InjectRepository(TaskEntity)
-    private taskRepository: Repository<TaskEntity>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
-    @InjectRepository(ProjectEntity)
-    private projectRepository: Repository<ProjectEntity>,
+    @Inject('TaskRepositoryInterface')
+    private readonly taskRepository: TaskRepositoryInterface,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface,
+    @Inject('ProjectRepositoryInterface')
+    private readonly projectRepository: ProjectRepositoryInterface,
   ) {}
 
   async create(
@@ -43,11 +41,12 @@ export class TaskService {
   }
 
   async findByUserId(userId: number) {
-    return await this.taskRepository.find({ where: { user: { id: userId } } });
+    return await this.taskRepository.findByUserId(userId);
   }
 
   async removeById(id: number) {
-    const task = await this.taskRepository.findOneOrFail({ where: { id } });
-    return await this.taskRepository.remove(task);
+    // const task = await this.taskRepository.findOneOrFail({ where: { id } });
+    const task = await this.taskRepository.findOneById(id);
+    return await this.taskRepository.remove(task.id);
   }
 }

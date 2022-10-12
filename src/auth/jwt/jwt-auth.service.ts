@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
 import { JwtService } from '@nestjs/jwt';
 import { userFromGoogle } from 'src/helpers/userFromGoogle';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
 import { UserService } from 'src/user/user.service';
 import { JwtPayload } from '../strategies/jwt.strategy';
 
@@ -17,7 +17,7 @@ export class JwtAuthService {
     try {
       const data = userFromGoogle(user);
       const userExits = await this.userService.findUserByEmail(data);
-      let dbUser: UserEntity;
+      let dbUser: UserTypeormEntity;
 
       if (!userExits) {
         dbUser = await this.userService.createUser(data);

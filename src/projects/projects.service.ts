@@ -1,21 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
 import { ProjectDTO } from './dto/projects.dto';
-import { ProjectEntity } from './entity/project.entity';
+import { ProjectRepositoryInterface } from './interface/project.repository.interface';
 
 @Injectable()
 export class ProjectsService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
-    @InjectRepository(ProjectEntity)
-    private projectRepository: Repository<ProjectEntity>,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface,
+    @Inject('ProjectRepositoryInterface')
+    private readonly projectRepository: ProjectRepositoryInterface,
   ) {}
 
   async getAllProjects() {
-    return await this.projectRepository.find();
+    return await this.projectRepository.findAll();
   }
 
   async getProjectsByUserId(userId: number) {

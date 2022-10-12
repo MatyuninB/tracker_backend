@@ -1,20 +1,19 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { TeamRoleTypeEnum } from 'src/type/TeamRoleTypeEnum';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
-import { TeamEntity } from './entity/team.entity';
-import { UserTeamEntity } from './entity/user-team.entity';
+import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
+import { TeamRepositoryInterface } from './interface/team.repository.interface';
+import { UserTeamRepositoryInterface } from './interface/user-team.repository.interface';
 
 @Injectable()
 export class TeamService {
   constructor(
-    @InjectRepository(TeamEntity)
-    private teamRepository: Repository<TeamEntity>,
-    @InjectRepository(UserTeamEntity)
-    private userTeamRepository: Repository<UserTeamEntity>,
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
+    @Inject('TeamRepositoryInterface')
+    private readonly teamRepository: TeamRepositoryInterface,
+    @Inject('UserTeamRepositoryInterface')
+    private readonly userTeamRepository: UserTeamRepositoryInterface,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface,
   ) {}
 
   async createTeam(title: string) {
@@ -26,7 +25,7 @@ export class TeamService {
   }
 
   async addManegerInTeam(
-    inviterUser: UserEntity,
+    inviterUser: UserTypeormEntity,
     email: string,
     teamId: number,
   ) {
@@ -39,7 +38,7 @@ export class TeamService {
   }
 
   async addRegularUserInTeam(
-    inviterUser: UserEntity,
+    inviterUser: UserTypeormEntity,
     email: string,
     teamId: number,
   ) {
@@ -52,7 +51,7 @@ export class TeamService {
   }
 
   private async addUserInTeam(
-    inviterUser: UserEntity,
+    inviterUser: UserTypeormEntity,
     email: string,
     teamId: number,
     role: TeamRoleTypeEnum,
@@ -81,7 +80,7 @@ export class TeamService {
   }
 
   async deleteUserInTeam(
-    user: UserEntity,
+    user: UserTypeormEntity,
     deletedUserId: number,
     teamId: number,
   ) {
@@ -101,7 +100,7 @@ export class TeamService {
       throw new BadRequestException('Manager can only be removed by admin');
     }
 
-    return await this.userTeamRepository.delete(deletedUserTeam.id);
+    return await this.userTeamRepository.remove(deletedUserTeam.id);
   }
 
   async getAllTeams() {
