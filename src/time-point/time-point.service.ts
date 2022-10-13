@@ -3,6 +3,7 @@ import { TaskRepositoryInterface } from 'src/task/interface/task.repository.inte
 import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { TimePointTypeormEntity } from '../entities/typeorm-entities/time-point.typeorm.entity';
 import { TimePointRepositoryInterface } from './interface/timepoint.repository.interface';
+import TimePointEntity from './entities/time-point.entity';
 
 @Injectable()
 export class TimePointService {
@@ -20,23 +21,21 @@ export class TimePointService {
     title: string,
     description?: string,
   ) {
-    const task = await this.taskRepository.findOneOrFail({
-      where: { id: taskId, user_id: user.id },
-    });
+    const task = await this.taskRepository.findOneById(taskId);
 
-    const timePointInDb = await this.timePointRepository.findOne({
-      where: { title },
-    });
+    if (task.user_id != user.id) {
+      //Что то сделать!
+    }
+
+    const timePointInDb = await this.timePointRepository.findByTitle(title);
 
     //  Если тайм поинт с таким тайтлом уже существует
     if (timePointInDb) {
       throw new BadRequestException('Timepoint with this title already exists');
     }
 
-    const lastUserTimePoint = await this.timePointRepository.findOne({
-      order: { end: 'DESC' },
-      where: { user_id: user.id },
-    });
+    const lastUserTimePoint =
+      await this.timePointRepository.findLastUserTimePoint(user.id);
 
     //  Если последний тайм поинт ещё не остановлен
     if (!lastUserTimePoint.end) {
@@ -50,6 +49,16 @@ export class TimePointService {
       );
     }
 
+    // const timePoint: TimePointEntity = {
+    //   title: '',
+    //   description: '',
+    //   start: undefined,
+    //   end: undefined,
+    //   task_id: 0,
+    //   user_id: 0,
+    //   id: 0,
+    // };
+
     const timePoint = this.timePointRepository.create();
 
     timePoint.user = user;
@@ -62,19 +71,20 @@ export class TimePointService {
   }
 
   async addStopTimepoint(user: UserTypeormEntity, time: Date, taskId: number) {
-    const task = await this.taskRepository.findOneOrFail({
-      where: { id: taskId, user_id: user.id },
-    });
+    const task = await this.taskRepository.findOneById(taskId);
 
-    const lastUserTimePoint = await this.timePointRepository.findOne({
-      order: { end: 'DESC' },
-      where: { user_id: user.id },
-    });
+    if (task.user_id != user.id) {
+      //Что то сделать!
+    }
 
-    const lastTaskTimePoint = await this.timePointRepository.findOne({
-      order: { end: 'DESC' },
-      where: { user_id: user.id, task_id: task.id },
-    });
+    const lastUserTimePoint =
+      await this.timePointRepository.findLastUserTimePoint(user.id);
+
+    const lastTaskTimePoint =
+      await this.timePointRepository.findLastUserTaskTimePoint(
+        user.id,
+        task.id,
+      );
 
     //  Если последний тайм поинт в таске уже остановлен
     if (lastTaskTimePoint.end) {
@@ -96,24 +106,11 @@ export class TimePointService {
     startDate?: Date,
     endDate?: Date,
   ): Promise<TimePointTypeormEntity[]> {
-    if (startDate && endDate) {
-      return await this.timePointRepository.find({
-        where: { user_id: user.id, start: startDate, end: endDate },
-      });
-    } else if (startDate) {
-      return await this.timePointRepository.find({
-        where: { user_id: user.id, start: startDate },
-      });
-    } else if (endDate) {
-      return await this.timePointRepository.find({
-        where: { user_id: user.id, end: endDate },
-      });
-    }
-
-    return await this.timePointRepository.find({
-      where: { user_id: user.id },
-      order: { start: 'ASC' },
-    });
+    return await this.timePointRepository.findUserTimePoints(
+      user.id,
+      startDate,
+      endDate,
+    );
   }
 
   async getUserTimePointsByTaskId(
@@ -122,28 +119,17 @@ export class TimePointService {
     startDate?: Date,
     endDate?: Date,
   ): Promise<TimePointTypeormEntity[]> {
-    const task = await this.taskRepository.findOneOrFail({
-      where: { id: taskId, user_id: user.id },
-    });
+    const task = await this.taskRepository.findOneById(taskId);
 
-    if (startDate && endDate) {
-      return await this.timePointRepository.find({
-        where: { task, start: startDate, end: endDate },
-      });
-    } else if (startDate) {
-      return await this.timePointRepository.find({
-        where: { task, start: startDate },
-      });
-    } else if (endDate) {
-      return await this.timePointRepository.find({
-        where: { task, end: endDate },
-      });
+    if (task.user_id != user.id) {
+      //Что то сделать!
     }
 
-    return await this.timePointRepository.find({
-      where: { task_id: task.id },
-      order: { start: 'ASC' },
-    });
+    return await this.timePointRepository.findTimePointsByTaskId(
+      task.id,
+      startDate,
+      endDate,
+    );
   }
 
   async getTimePoint(

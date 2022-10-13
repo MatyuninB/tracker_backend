@@ -3,5 +3,6 @@ import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.re
 
 export interface TaskRepositoryInterface
   extends BaseInterfaceRepository<TaskEntity> {
-  findByUserId(id: number): Promise<TaskEntity>;
+  findOneByUserId(id: number): Promise<TaskEntity | null>;
+  findOneByTitle(title: string): Promise<TaskEntity | null>;
 }

@@ -3,10 +3,11 @@ import { ProjectTypeormEntity } from 'src/entities/typeorm-entities/project.type
 import { TaskTypeormEntity } from 'src/entities/typeorm-entities/task.typeorm.entity';
 import { TimePointTypeormEntity } from 'src/entities/typeorm-entities/time-point.typeorm.entity';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
+import UserEntity from 'src/user/entities/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({ name: 'user' })
-export class UserTypeormEntity extends BaseTypeormEntity {
+export class UserTypeormEntity extends BaseTypeormEntity implements UserEntity {
   @Column()
   name: string;
 

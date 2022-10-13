@@ -3,9 +3,13 @@ import { TeamRoleTypeEnum } from 'src/type/TeamRoleTypeEnum';
 import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { TeamTypeormEntity } from './team.typeorm.entity';
+import UserTeamEntity from 'src/team/entity/user-team.entity';
 
 @Entity({ name: 'user-team' })
-export class UserTeamTypeormEntity extends BaseTypeormEntity {
+export class UserTeamTypeormEntity
+  extends BaseTypeormEntity
+  implements UserTeamEntity
+{
   @Column({
     type: 'enum',
     enum: TeamRoleTypeEnum,

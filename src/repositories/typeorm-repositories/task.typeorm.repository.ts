@@ -16,7 +16,11 @@ export class TaskTypeormRepository
   ) {
     super(taskRepository);
   }
-  async findByUserId(id: number): Promise<TaskTypeormEntity> {
+  async findOneByUserId(id: number): Promise<TaskTypeormEntity | null> {
     return await this.taskRepository.findOne({ where: { user_id: id } });
+  }
+
+  async findOneByTitle(title: string): Promise<TaskTypeormEntity | null> {
+    return await this.taskRepository.findOne({ where: { title } });
   }
 }

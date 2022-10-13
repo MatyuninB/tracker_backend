@@ -20,18 +20,24 @@ export class TaskService {
     title: string,
     description: string,
   ) {
-    const user = await this.userRepository.findOneOrFail({
-      where: { id: userId },
-    });
+    const user = await this.userRepository.findOneById(userId);
+    if (!user) {
+      //
+    }
 
-    const project = await this.projectRepository.findOneOrFail({
-      where: { id: projectId },
-    });
+    const project = await this.projectRepository.findOneById(projectId);
+    if (!project) {
+      //
+    }
 
-    const task = await this.taskRepository.findOne({ where: { title, user } });
+    const task = await this.taskRepository.findOneByTitle(title);
     if (task) {
       throw new BadRequestException('A task with the same name already exists');
     }
+    if (task.user_id != userId) {
+      //
+    }
+
     return await this.taskRepository.save({
       user,
       project,
@@ -41,11 +47,10 @@ export class TaskService {
   }
 
   async findByUserId(userId: number) {
-    return await this.taskRepository.findByUserId(userId);
+    return await this.taskRepository.findOneByUserId(userId);
   }
 
   async removeById(id: number) {
-    // const task = await this.taskRepository.findOneOrFail({ where: { id } });
     const task = await this.taskRepository.findOneById(id);
     return await this.taskRepository.remove(task.id);
   }

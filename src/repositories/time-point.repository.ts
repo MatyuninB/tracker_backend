@@ -7,19 +7,10 @@ export class TaskRepository
   create(data?: any): TimePointEntity {
     throw new Error('Method not implemented.');
   }
-  find(data: any): Promise<TimePointEntity[]> {
+  findOne(data: any): Promise<TimePointEntity | null> {
     throw new Error('Method not implemented.');
   }
-  findOneOrFail(data: any): Promise<TimePointEntity> {
-    throw new Error('Method not implemented.');
-  }
-  update(data: any, data2: any): Promise<TimePointEntity> {
-    throw new Error('Method not implemented.');
-  }
-  findOne(data: any): Promise<TimePointEntity> {
-    throw new Error('Method not implemented.');
-  }
-  findOneById(id: number): Promise<TimePointEntity> {
+  findOneById(id: number): Promise<TimePointEntity | null> {
     throw new Error('Method not implemented.');
   }
   findAll(): Promise<TimePointEntity[]> {
@@ -29,6 +20,15 @@ export class TaskRepository
     throw new Error('Method not implemented.');
   }
   save(data: any): Promise<TimePointEntity> {
+    throw new Error('Method not implemented.');
+  }
+  findOneOrFail(data: any): Promise<TimePointEntity> {
+    throw new Error('Method not implemented.');
+  }
+  update(data: any, data2: any): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  find(data: any): Promise<TimePointEntity[]> {
     throw new Error('Method not implemented.');
   }
 }

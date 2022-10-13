@@ -3,4 +3,6 @@ import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.re
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UserTeamRepositoryInterface
-  extends BaseInterfaceRepository<UserTeamEntity> {}
+  extends BaseInterfaceRepository<UserTeamEntity> {
+  findOneByUserId(userId: number): Promise<UserTeamEntity | null>;
+}

@@ -3,5 +3,6 @@ import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.re
 
 export interface UserRepositoryInterface
   extends BaseInterfaceRepository<UserEntity> {
-  findByEmail(email: string): Promise<UserEntity>;
+  findOneByEmail(email: string): Promise<UserEntity | null>;
+  findOneWithProjects(id: number): Promise<UserEntity | null>;
 }

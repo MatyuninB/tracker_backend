@@ -1,7 +1,7 @@
 import { BaseInterfaceRepository } from '../base/base.interface.repository';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, ObjectLiteral, Repository } from 'typeorm';
 
-export abstract class BaseAbstractRepository<T>
+export abstract class BaseAbstractRepository<T extends ObjectLiteral>
   implements BaseInterfaceRepository<T>
 {
   private entity: Repository<T>;
@@ -9,21 +9,21 @@ export abstract class BaseAbstractRepository<T>
   protected constructor(entity: Repository<T>) {
     this.entity = entity;
   }
-  create(data?: any): T {
-    throw new Error('Method not implemented.');
+  public create(data?: any): T {
+    return this.entity.create();
   }
-  find(data: any): Promise<T[]> {
-    throw new Error('Method not implemented.');
+  public async find(data: any): Promise<T[]> {
+    return await this.entity.find(data);
   }
-  update(data: any, data2: any): Promise<T> {
-    throw new Error('Method not implemented.');
+  public async update(data: any, data2: any): Promise<void> {
+    await this.entity.update(data, data2);
   }
 
-  public async findOneById(id: number): Promise<T> {
+  public async findOneById(id: number): Promise<T | null> {
     return await this.entity.findOneById(id);
   }
 
-  public async findByCondition(filterCondition: any): Promise<T> {
+  public async findByCondition(filterCondition: any): Promise<T | null> {
     return await this.entity.findOne({ where: filterCondition });
   }
 
@@ -39,7 +39,7 @@ export abstract class BaseAbstractRepository<T>
     return await this.entity.delete(id);
   }
 
-  public async findOne(data: any): Promise<T> {
+  public async findOne(data: any): Promise<T | null> {
     return this.entity.findOne(data);
   }
 

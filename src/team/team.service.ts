@@ -4,6 +4,7 @@ import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.en
 import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
 import { TeamRepositoryInterface } from './interface/team.repository.interface';
 import { UserTeamRepositoryInterface } from './interface/user-team.repository.interface';
+import TeamEntity from './entity/team.entity';
 
 @Injectable()
 export class TeamService {
@@ -15,9 +16,37 @@ export class TeamService {
     @Inject('UserRepositoryInterface')
     private readonly userRepository: UserRepositoryInterface,
   ) {}
+  private async addUserInTeam(
+    inviterUser: UserTypeormEntity,
+    email: string,
+    teamId: number,
+    role: TeamRoleTypeEnum,
+  ) {
+    const user = await this.userRepository.findOneByEmail(email);
+
+    const team = await this.teamRepository.findOneById(teamId);
+
+    if (!team) {
+      throw new BadRequestException('Team does not exist');
+    }
+
+    const userTeamInDb = await this.userTeamRepository.findOneByUserId(user.id);
+
+    if (userTeamInDb) {
+      throw new BadRequestException('The user is already a member of the team');
+    }
+
+    const userTeam = this.userTeamRepository.create();
+    userTeam.team = team;
+    userTeam.inviter = inviterUser;
+    userTeam.role = role;
+    userTeam.user = user;
+
+    return await this.userTeamRepository.save(userTeam);
+  }
 
   async createTeam(title: string) {
-    const team = await this.teamRepository.findOne({ where: { title } });
+    const team = await this.teamRepository.findOneByTitle(title);
     if (team) {
       throw new BadRequestException('A team with the same name already exists');
     }
@@ -50,47 +79,26 @@ export class TeamService {
     );
   }
 
-  private async addUserInTeam(
-    inviterUser: UserTypeormEntity,
-    email: string,
-    teamId: number,
-    role: TeamRoleTypeEnum,
-  ) {
-    const user = await this.userRepository.findOneOrFail({ where: { email } });
-
-    const team = await this.teamRepository.findOneOrFail({
-      where: { id: teamId },
-    });
-
-    const userTeamInDb = await this.userTeamRepository.findOne({
-      where: { user_id: user.id },
-    });
-
-    if (userTeamInDb) {
-      throw new BadRequestException('The user is already a member of the team');
-    }
-
-    const userTeam = this.userTeamRepository.create();
-    userTeam.team = team;
-    userTeam.inviter = inviterUser;
-    userTeam.role = role;
-    userTeam.user = user;
-
-    return await this.userTeamRepository.save(userTeam);
-  }
-
   async deleteUserInTeam(
     user: UserTypeormEntity,
     deletedUserId: number,
     teamId: number,
   ) {
-    const deletedUserTeam = await this.userTeamRepository.findOneOrFail({
-      where: { user_id: deletedUserId, team_id: teamId },
-    });
+    const deletedUserTeam = await this.userTeamRepository.findOneById(
+      deletedUserId,
+    );
 
-    const userTeam = await this.userTeamRepository.findOneOrFail({
-      where: { user_id: user.id, team_id: teamId },
-    });
+    if (deletedUserTeam.team_id != teamId) {
+      throw new BadRequestException(
+        'The user to be deleted is not a member of the team',
+      );
+    }
+
+    const userTeam = await this.userTeamRepository.findOneById(user.id);
+
+    if (userTeam.team_id != teamId) {
+      throw new BadRequestException('The user is not a member of the team');
+    }
 
     if (userTeam.role != TeamRoleTypeEnum.MANAGER) {
       throw new BadRequestException('Only the team manager can delete users');
@@ -103,14 +111,11 @@ export class TeamService {
     return await this.userTeamRepository.remove(deletedUserTeam.id);
   }
 
-  async getAllTeams() {
-    return await this.teamRepository.find({ relations: ['users'] });
+  async getAllTeams(): Promise<TeamEntity[]> {
+    return await this.teamRepository.findManyWithUsers();
   }
 
-  async getTeamWithUsers(teamId = 1) {
-    return await this.teamRepository.findOneOrFail({
-      relations: ['users'],
-      where: { id: teamId },
-    });
+  async getTeamWithUsers(teamId = 1): Promise<TeamEntity> {
+    return await this.teamRepository.findOneByIdWithUsers(teamId); //Почему не видит null?
   }
 }

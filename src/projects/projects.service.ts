@@ -17,17 +17,11 @@ export class ProjectsService {
   }
 
   async getProjectsByUserId(userId: number) {
-    return this.projectRepository.find({
-      relations: ['users'],
-      where: { users: { id: userId } },
-    });
+    return this.projectRepository.findManyByUserId(userId);
   }
 
   async createProject(data: ProjectDTO) {
-    const project = await this.projectRepository.findOne({
-      where: { title: data.title },
-    });
-
+    const project = await this.projectRepository.findOneByTitle(data.title);
     if (project) {
       throw new BadRequestException(
         'A project with the same name already exists',
@@ -37,9 +31,10 @@ export class ProjectsService {
   }
 
   async assignUser(userId: number, projectId: number) {
-    const user = await this.userRepository.findOneOrFail({
-      where: { id: userId },
-    });
+    const user = await this.userRepository.findOneById(userId);
+    if (!user) {
+      //
+    }
     return await this.projectRepository.update(projectId, { users: [user] });
   }
 

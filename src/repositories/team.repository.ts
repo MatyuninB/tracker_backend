@@ -5,20 +5,10 @@ export class TeamRepository implements BaseInterfaceRepository<TeamEntity> {
   create(data?: any): TeamEntity {
     throw new Error('Method not implemented.');
   }
-  find(data: any): Promise<TeamEntity[]> {
+  findOne(data: any): Promise<TeamEntity | null> {
     throw new Error('Method not implemented.');
   }
-  findOneOrFail(data: any): Promise<TeamEntity> {
-    throw new Error('Method not implemented.');
-  }
-  update(data: any, data2: any): Promise<TeamEntity> {
-    throw new Error('Method not implemented.');
-  }
-  findOne(data: any): Promise<TeamEntity> {
-    throw new Error('Method not implemented.');
-  }
-
-  findOneById(id: number): Promise<TeamEntity> {
+  findOneById(id: number): Promise<TeamEntity | null> {
     throw new Error('Method not implemented.');
   }
   findAll(): Promise<TeamEntity[]> {
@@ -28,6 +18,15 @@ export class TeamRepository implements BaseInterfaceRepository<TeamEntity> {
     throw new Error('Method not implemented.');
   }
   save(data: any): Promise<TeamEntity> {
+    throw new Error('Method not implemented.');
+  }
+  findOneOrFail(data: any): Promise<TeamEntity> {
+    throw new Error('Method not implemented.');
+  }
+  update(data: any, data2: any): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  find(data: any): Promise<TeamEntity[]> {
     throw new Error('Method not implemented.');
   }
 }

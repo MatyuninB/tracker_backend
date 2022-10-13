@@ -16,7 +16,13 @@ export class UserTypeormRepository
   ) {
     super(userRepository);
   }
-  async findByEmail(email: string): Promise<UserTypeormEntity> {
+  async findOneByEmail(email: string): Promise<UserTypeormEntity | null> {
     return await this.userRepository.findOne({ where: { email } });
+  }
+  async findOneWithProjects(id: number): Promise<UserTypeormEntity | null> {
+    return await this.userRepository.findOne({
+      relations: ['projects'],
+      where: { id },
+    });
   }
 }

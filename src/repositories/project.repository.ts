@@ -7,19 +7,10 @@ export class ProjectRepository
   create(data?: any): ProjectEntity {
     throw new Error('Method not implemented.');
   }
-  find(data: any): Promise<ProjectEntity[]> {
+  findOne(data: any): Promise<ProjectEntity | null> {
     throw new Error('Method not implemented.');
   }
-  findOneOrFail(data: any): Promise<ProjectEntity> {
-    throw new Error('Method not implemented.');
-  }
-  update(data: any, data2: any): Promise<ProjectEntity> {
-    throw new Error('Method not implemented.');
-  }
-  findOne(data: any): Promise<ProjectEntity> {
-    throw new Error('Method not implemented.');
-  }
-  findOneById(id: number): Promise<ProjectEntity> {
+  findOneById(id: number): Promise<ProjectEntity | null> {
     throw new Error('Method not implemented.');
   }
   findAll(): Promise<ProjectEntity[]> {
@@ -29,6 +20,15 @@ export class ProjectRepository
     throw new Error('Method not implemented.');
   }
   save(data: any): Promise<ProjectEntity> {
+    throw new Error('Method not implemented.');
+  }
+  findOneOrFail(data: any): Promise<ProjectEntity> {
+    throw new Error('Method not implemented.');
+  }
+  update(data: any, data2: any): Promise<void> {
+    throw new Error('Method not implemented.');
+  }
+  find(data: any): Promise<ProjectEntity[]> {
     throw new Error('Method not implemented.');
   }
 }
