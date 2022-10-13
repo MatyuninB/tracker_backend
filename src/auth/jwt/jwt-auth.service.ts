@@ -1,5 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { HttpErrorByCode } from '@nestjs/common/utils/http-error-by-code.util';
+import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { userFromGoogle } from 'src/helpers/userFromGoogle';
 import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
@@ -16,6 +15,9 @@ export class JwtAuthService {
   async login(user) {
     try {
       const data = userFromGoogle(user);
+      if (!data) {
+        throw new BadRequestException(); // TODO:
+      }
       const userExits = await this.userService.findUserByEmail(data);
       let dbUser: UserTypeormEntity;
 
@@ -32,7 +34,7 @@ export class JwtAuthService {
       return {
         accessToken: this.jwtService.sign(payload),
       };
-    } catch (e) {
+    } catch (e: any) {
       throw new HttpException(e, 404);
     }
   }

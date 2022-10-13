@@ -17,6 +17,7 @@ export class TimePointTypeormEntity
   title: string;
 
   @Column({
+    type: 'varchar',
     length: 100,
     unique: true,
     nullable: true,

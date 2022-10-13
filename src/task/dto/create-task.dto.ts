@@ -7,7 +7,7 @@ export class CreateTaskDto {
     example: 'some title',
   })
   @IsString()
-  title?: string;
+  title: string;
 
   @ApiProperty({
     type: String,

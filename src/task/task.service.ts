@@ -18,7 +18,7 @@ export class TaskService {
     userId: number,
     projectId: number,
     title: string,
-    description: string,
+    description?: string,
   ) {
     const user = await this.userRepository.findOneById(userId);
     if (!user) {
