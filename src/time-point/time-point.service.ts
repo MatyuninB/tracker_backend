@@ -3,7 +3,6 @@ import { TaskRepositoryInterface } from 'src/task/interface/task.repository.inte
 import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { TimePointTypeormEntity } from '../entities/typeorm-entities/time-point.typeorm.entity';
 import { TimePointRepositoryInterface } from './interface/timepoint.repository.interface';
-import TimePointEntity from './entities/time-point.entity';
 
 @Injectable()
 export class TimePointService {
@@ -22,6 +21,9 @@ export class TimePointService {
     description?: string,
   ) {
     const task = await this.taskRepository.findOneById(taskId);
+    if (!task) {
+      throw new BadRequestException(); // TODO
+    }
 
     if (task.user_id != user.id) {
       //Что то сделать!
@@ -36,6 +38,10 @@ export class TimePointService {
 
     const lastUserTimePoint =
       await this.timePointRepository.findLastUserTimePoint(user.id);
+
+    if (!lastUserTimePoint) {
+      throw new BadRequestException(); // TODO
+    }
 
     //  Если последний тайм поинт ещё не остановлен
     if (!lastUserTimePoint.end) {
@@ -72,6 +78,9 @@ export class TimePointService {
 
   async addStopTimepoint(user: UserTypeormEntity, time: Date, taskId: number) {
     const task = await this.taskRepository.findOneById(taskId);
+    if (!task) {
+      throw new BadRequestException(); // TODO
+    }
 
     if (task.user_id != user.id) {
       //Что то сделать!
@@ -79,12 +88,18 @@ export class TimePointService {
 
     const lastUserTimePoint =
       await this.timePointRepository.findLastUserTimePoint(user.id);
+    if (!lastUserTimePoint) {
+      throw new BadRequestException(); // TODO
+    }
 
     const lastTaskTimePoint =
       await this.timePointRepository.findLastUserTaskTimePoint(
         user.id,
         task.id,
       );
+    if (!lastTaskTimePoint) {
+      throw new BadRequestException(); // TODO
+    }
 
     //  Если последний тайм поинт в таске уже остановлен
     if (lastTaskTimePoint.end) {
@@ -120,6 +135,9 @@ export class TimePointService {
     endDate?: Date,
   ): Promise<TimePointTypeormEntity[]> {
     const task = await this.taskRepository.findOneById(taskId);
+    if (!task) {
+      throw new BadRequestException(); // TODO
+    }
 
     if (task.user_id != user.id) {
       //Что то сделать!
@@ -210,6 +228,7 @@ export class TimePointService {
         //  Время начала не может быть меньше времени конца предыдущего time point
         if (
           previousUserTimePoint &&
+          previousUserTimePoint.end &&
           new Date(start) < new Date(previousUserTimePoint.end)
         ) {
           throw new BadRequestException(

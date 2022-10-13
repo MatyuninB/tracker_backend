@@ -23,15 +23,16 @@ export class TeamService {
     role: TeamRoleTypeEnum,
   ) {
     const user = await this.userRepository.findOneByEmail(email);
+    if (!user) {
+      throw new BadRequestException(); // TODO
+    }
 
     const team = await this.teamRepository.findOneById(teamId);
-
     if (!team) {
       throw new BadRequestException('Team does not exist');
     }
 
     const userTeamInDb = await this.userTeamRepository.findOneByUserId(user.id);
-
     if (userTeamInDb) {
       throw new BadRequestException('The user is already a member of the team');
     }
@@ -87,6 +88,9 @@ export class TeamService {
     const deletedUserTeam = await this.userTeamRepository.findOneById(
       deletedUserId,
     );
+    if (!deletedUserTeam) {
+      throw new BadRequestException(); // TODO
+    }
 
     if (deletedUserTeam.team_id != teamId) {
       throw new BadRequestException(
@@ -95,6 +99,9 @@ export class TeamService {
     }
 
     const userTeam = await this.userTeamRepository.findOneById(user.id);
+    if (!userTeam) {
+      throw new BadRequestException(); // TODO
+    }
 
     if (userTeam.team_id != teamId) {
       throw new BadRequestException('The user is not a member of the team');
@@ -116,6 +123,10 @@ export class TeamService {
   }
 
   async getTeamWithUsers(teamId = 1): Promise<TeamEntity> {
-    return await this.teamRepository.findOneByIdWithUsers(teamId); //Почему не видит null?
+    const team = await this.teamRepository.findOneByIdWithUsers(teamId);
+    if (!team) {
+      throw new BadRequestException(); // TODO
+    }
+    return team;
   }
 }

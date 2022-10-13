@@ -34,9 +34,6 @@ export class TaskService {
     if (task) {
       throw new BadRequestException('A task with the same name already exists');
     }
-    if (task.user_id != userId) {
-      //
-    }
 
     return await this.taskRepository.save({
       user,
@@ -52,6 +49,9 @@ export class TaskService {
 
   async removeById(id: number) {
     const task = await this.taskRepository.findOneById(id);
+    if (!task) {
+      throw new BadRequestException(); // TODO
+    }
     return await this.taskRepository.remove(task.id);
   }
 }
