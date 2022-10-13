@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TaskTypeormEntity } from 'src/task/entities/task.typeorm.entity';
-import { TimePointTypeormEntity } from './entities/time-point.typeorm.entity';
+import { TaskTypeormEntity } from 'src/entities/typeorm-entities/task.typeorm.entity';
+import { TimePointTypeormEntity } from '../entities/typeorm-entities/time-point.typeorm.entity';
 import { TimePointController } from './time-point.controller';
 import { TimePointService } from './time-point.service';
 

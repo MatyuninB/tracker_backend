@@ -1,4 +1,4 @@
-import ProjectEntity from 'src/entities/project.entity';
+import ProjectEntity from 'src/projects/entity/project.entity';
 import { BaseInterfaceRepository } from './base/base.interface.repository';
 
 export class ProjectRepository

@@ -1,4 +1,4 @@
-import TimePointEntity from 'src/entities/time-point.entity';
+import TimePointEntity from 'src/time-point/entities/time-point.entity';
 import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.repository';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

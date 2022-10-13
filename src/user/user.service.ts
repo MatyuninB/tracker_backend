@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import { UserDTO } from './dto/user.dto';
-import { UserTypeormEntity } from './entities/user.typeorm.entity';
+import { UserTypeormEntity } from '../entities/typeorm-entities/user.typeorm.entity';
 import { UserRepositoryInterface } from './interface/user.repository.interface';
 
 @Injectable()

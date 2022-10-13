@@ -1,10 +1,10 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { TaskTypeormEntity } from 'src/task/entities/task.typeorm.entity';
-import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { BaseTypeormEntity } from 'src/entities/typeorm-entities/base.typeorm.entity';
+import { TaskTypeormEntity } from 'src/entities/typeorm-entities/task.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'time-point' })
-export class TimePointTypeormEntity extends BaseEntity {
+export class TimePointTypeormEntity extends BaseTypeormEntity {
   @Column({
     length: 100,
     unique: true,

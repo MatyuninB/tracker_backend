@@ -1,6 +1,6 @@
 import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
-import { TaskEntity } from './task.entity';
-import UserEntity from './user.entity';
+import { TaskEntity } from '../task/entities/task.entity';
+import UserEntity from '../user/entities/user.entity';
 
 export default class TimePointEntity extends BaseAbstractEntity {
   title: string;

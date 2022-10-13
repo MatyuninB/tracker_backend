@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { TeamRoleTypeEnum } from 'src/type/TeamRoleTypeEnum';
-import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
 import { TeamRepositoryInterface } from './interface/team.repository.interface';
 import { UserTeamRepositoryInterface } from './interface/user-team.repository.interface';

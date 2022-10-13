@@ -2,7 +2,7 @@ import type { CanActivate, ExecutionContext } from '@nestjs/common';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
-import { UserTypeormEntity } from '../entities/user.typeorm.entity';
+import { UserTypeormEntity } from '../../entities/typeorm-entities/user.typeorm.entity';
 
 @Injectable()
 export class RoleGuard implements CanActivate {

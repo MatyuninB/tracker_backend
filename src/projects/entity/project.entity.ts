@@ -1,5 +1,5 @@
 import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
-import UserEntity from './user.entity';
+import UserEntity from '../../user/entities/user.entity';
 
 export default class ProjectEntity extends BaseAbstractEntity {
   title: string;

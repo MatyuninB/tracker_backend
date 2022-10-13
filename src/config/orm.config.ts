@@ -1,11 +1,11 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { config } from 'dotenv';
-import { ProjectTypeormEntity } from 'src/projects/entity/project.typeorm.entity';
-import { TaskTypeormEntity } from 'src/task/entities/task.typeorm.entity';
-import { TeamTypeormEntity } from 'src/team/entity/team.typeorm.entity';
-import { TimePointTypeormEntity } from 'src/time-point/entities/time-point.typeorm.entity';
-import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { ProjectTypeormEntity } from 'src/entities/typeorm-entities/project.typeorm.entity';
+import { TaskTypeormEntity } from 'src/entities/typeorm-entities/task.typeorm.entity';
+import { TeamTypeormEntity } from 'src/entities/typeorm-entities/team.typeorm.entity';
+import { TimePointTypeormEntity } from 'src/entities/typeorm-entities/time-point.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 
 config();
 

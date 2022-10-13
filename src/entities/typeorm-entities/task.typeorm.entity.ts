@@ -1,10 +1,10 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { ProjectTypeormEntity } from 'src/projects/entity/project.typeorm.entity';
-import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { BaseTypeormEntity } from 'src/entities/typeorm-entities/base.typeorm.entity';
+import { ProjectTypeormEntity } from 'src/entities/typeorm-entities/project.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 
 @Entity({ name: 'task' })
-export class TaskTypeormEntity extends BaseEntity {
+export class TaskTypeormEntity extends BaseTypeormEntity {
   @Column({
     length: 100,
     unique: true,

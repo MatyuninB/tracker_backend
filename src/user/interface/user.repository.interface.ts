@@ -1,4 +1,4 @@
-import UserEntity from 'src/entities/user.entity';
+import UserEntity from 'src/user/entities/user.entity';
 import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.repository';
 
 export interface UserRepositoryInterface

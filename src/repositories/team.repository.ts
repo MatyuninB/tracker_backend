@@ -1,4 +1,4 @@
-import TeamEntity from 'src/entities/team.entity';
+import TeamEntity from 'src/team/entity/team.entity';
 import { BaseInterfaceRepository } from './base/base.interface.repository';
 
 export class TeamRepository implements BaseInterfaceRepository<TeamEntity> {

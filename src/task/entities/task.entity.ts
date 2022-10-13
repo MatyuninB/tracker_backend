@@ -1,6 +1,6 @@
 import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
-import ProjectEntity from './project.entity';
-import UserEntity from './user.entity';
+import ProjectEntity from '../../projects/entity/project.entity';
+import UserEntity from '../../user/entities/user.entity';
 
 export class TaskEntity extends BaseAbstractEntity {
   title: string;

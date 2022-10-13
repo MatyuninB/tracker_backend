@@ -1,4 +1,4 @@
-import TimePointEntity from 'src/entities/time-point.entity';
+import TimePointEntity from 'src/time-point/entities/time-point.entity';
 import { BaseInterfaceRepository } from './base/base.interface.repository';
 
 export class TaskRepository

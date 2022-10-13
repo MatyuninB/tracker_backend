@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserTypeormEntity } from '../entities/user.typeorm.entity';
+import { UserTypeormEntity } from '../../entities/typeorm-entities/user.typeorm.entity';
 
 export class AssignTeamDTO {
   @ApiProperty({

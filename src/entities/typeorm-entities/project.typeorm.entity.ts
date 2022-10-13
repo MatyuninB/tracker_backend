@@ -1,9 +1,9 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { BaseTypeormEntity } from 'src/entities/typeorm-entities/base.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity({ name: 'projects' })
-export class ProjectTypeormEntity extends BaseEntity {
+export class ProjectTypeormEntity extends BaseTypeormEntity {
   @Column({
     length: 100,
     unique: true,

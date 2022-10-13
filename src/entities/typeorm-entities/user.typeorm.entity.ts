@@ -1,12 +1,12 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { ProjectTypeormEntity } from 'src/projects/entity/project.typeorm.entity';
-import { TaskTypeormEntity } from 'src/task/entities/task.typeorm.entity';
-import { TimePointTypeormEntity } from 'src/time-point/entities/time-point.typeorm.entity';
+import { BaseTypeormEntity } from 'src/entities/typeorm-entities/base.typeorm.entity';
+import { ProjectTypeormEntity } from 'src/entities/typeorm-entities/project.typeorm.entity';
+import { TaskTypeormEntity } from 'src/entities/typeorm-entities/task.typeorm.entity';
+import { TimePointTypeormEntity } from 'src/entities/typeorm-entities/time-point.typeorm.entity';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 @Entity({ name: 'user' })
-export class UserTypeormEntity extends BaseEntity {
+export class UserTypeormEntity extends BaseTypeormEntity {
   @Column()
   name: string;
 

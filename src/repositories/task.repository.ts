@@ -1,4 +1,4 @@
-import { TaskEntity } from 'src/entities/task.entity';
+import { TaskEntity } from 'src/task/entities/task.entity';
 import { TaskRepositoryInterface } from 'src/task/interface/task.repository.interface';
 
 export class TaskRepository implements TaskRepositoryInterface {

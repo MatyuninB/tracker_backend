@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import { TaskRepositoryInterface } from 'src/task/interface/task.repository.interface';
-import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
-import { TimePointTypeormEntity } from './entities/time-point.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
+import { TimePointTypeormEntity } from '../entities/typeorm-entities/time-point.typeorm.entity';
 import { TimePointRepositoryInterface } from './interface/timepoint.repository.interface';
 
 @Injectable()

@@ -3,8 +3,9 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { BaseInterfaceEntity } from '../base/base.interface.entity';
 
-export class BaseEntity {
+export class BaseTypeormEntity implements BaseInterfaceEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

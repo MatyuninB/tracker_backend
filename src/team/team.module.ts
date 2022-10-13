@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { TeamService } from './team.service';
 import { TeamController } from './team.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TeamTypeormEntity } from './entity/team.typeorm.entity';
-import { UserTeamTypeormEntity } from './entity/user-team.typeorm.entity';
-import { UserTypeormEntity } from 'src/user/entities/user.typeorm.entity';
+import { TeamTypeormEntity } from '../entities/typeorm-entities/team.typeorm.entity';
+import { UserTeamTypeormEntity } from '../entities/typeorm-entities/user-team.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 
 @Module({
   imports: [

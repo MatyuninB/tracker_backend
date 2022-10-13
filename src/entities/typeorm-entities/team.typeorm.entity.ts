@@ -1,8 +1,8 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
+import { BaseTypeormEntity } from 'src/entities/typeorm-entities/base.typeorm.entity';
 import { Entity, Column } from 'typeorm';
 
 @Entity({ name: 'team' })
-export class TeamTypeormEntity extends BaseEntity {
+export class TeamTypeormEntity extends BaseTypeormEntity {
   @Column({
     length: 100,
     unique: true,
