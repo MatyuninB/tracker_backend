@@ -1,42 +1,42 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
 import { TeamRoleTypeEnum } from 'src/type/TeamRoleTypeEnum';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
-import { TeamEntity } from './team.entity';
+import { UserEntityDb } from 'src/user/entities/user.entity';
+import { TeamEntityDb } from './team.entity';
 
-@Entity({ name: 'user-team' })
-export class UserTeamEntity extends BaseEntity {
-  @Column({
-    type: 'enum',
-    enum: TeamRoleTypeEnum,
-    nullable: false,
-  })
+interface IUserTeamEntity {
   role: TeamRoleTypeEnum;
-
-  @Column({ nullable: true })
   team_id: number;
-
-  @Column({ nullable: true })
   user_id: number;
-
-  @Column({ nullable: true })
   inviter_id: number;
+}
 
-  @ManyToOne(() => TeamEntity)
-  @JoinColumn({
-    name: 'team_id',
-  })
-  team: TeamEntity;
+interface IUserTeamEntityRelattion {
+  team: TeamEntityDb;
+  user: UserEntityDb;
+  inviter: UserEntityDb;
+}
 
-  @ManyToOne(() => UserEntity)
-  @JoinColumn({
-    name: 'user_id',
-  })
-  user: UserEntity;
+interface IUserTeamEntityDb
+  extends BaseEntityInterface,
+    IUserTeamEntity,
+    IUserTeamEntityRelattion {}
 
-  @ManyToOne(() => UserEntity)
-  @JoinColumn({
-    name: 'inviter_id',
-  })
-  inviter: UserEntity;
+export class UserTeamEntity implements IUserTeamEntity {
+  role: TeamRoleTypeEnum;
+  team_id: number;
+  user_id: number;
+  inviter_id: number;
+}
+
+export class UserTeamEntityDb implements IUserTeamEntityDb {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  role: TeamRoleTypeEnum;
+  team_id: number;
+  user_id: number;
+  inviter_id: number;
+  team: TeamEntityDb;
+  user: UserEntityDb;
+  inviter: UserEntityDb;
 }

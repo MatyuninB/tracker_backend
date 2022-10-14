@@ -26,6 +26,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   ) {
     if (!profile) return null;
     const { name, emails, _json } = profile || {};
+    if (!name || !emails) return null;
 
     return {
       name: name.givenName,

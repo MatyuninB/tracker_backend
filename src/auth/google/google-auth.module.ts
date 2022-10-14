@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TeamEntity } from 'src/team/entity/team.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserTypeormRepository } from 'src/repositories/typeorm-repositories/user.typeorm.repository';
+import { TeamTypeormEntity } from 'src/entities/typeorm-entities/team.typeorm.entity';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { UserService } from 'src/user/user.service';
 import { JwtAuthModule } from '../jwt/jwt-auth.module';
 import { GoogleStrategy } from '../strategies/google.strategy';
@@ -11,11 +12,19 @@ import { GoogleAuthService } from './google-auth.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserEntity, TeamEntity]),
+    TypeOrmModule.forFeature([UserTypeormEntity, TeamTypeormEntity]),
     JwtAuthModule,
     ConfigModule,
   ],
   controllers: [GoogleController],
-  providers: [GoogleStrategy, GoogleAuthService, UserService],
+  providers: [
+    GoogleStrategy,
+    GoogleAuthService,
+    UserService,
+    {
+      provide: 'UserRepositoryInterface',
+      useClass: UserTypeormRepository,
+    },
+  ],
 })
 export class GoogleOauthModule {}

@@ -1,35 +1,27 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
 import { ProjectDTO } from './dto/projects.dto';
-import { ProjectEntity } from './entity/project.entity';
+import { ProjectRepositoryInterface } from './interface/project.repository.interface';
 
 @Injectable()
 export class ProjectsService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
-    @InjectRepository(ProjectEntity)
-    private projectRepository: Repository<ProjectEntity>,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface,
+    @Inject('ProjectRepositoryInterface')
+    private readonly projectRepository: ProjectRepositoryInterface,
   ) {}
 
   async getAllProjects() {
-    return await this.projectRepository.find();
+    return await this.projectRepository.findAll();
   }
 
   async getProjectsByUserId(userId: number) {
-    return this.projectRepository.find({
-      relations: ['users'],
-      where: { users: { id: userId } },
-    });
+    return this.projectRepository.findManyByUserId(userId);
   }
 
   async createProject(data: ProjectDTO) {
-    const project = await this.projectRepository.findOne({
-      where: { title: data.title },
-    });
-
+    const project = await this.projectRepository.findOneByTitle(data.title);
     if (project) {
       throw new BadRequestException(
         'A project with the same name already exists',
@@ -39,9 +31,10 @@ export class ProjectsService {
   }
 
   async assignUser(userId: number, projectId: number) {
-    const user = await this.userRepository.findOneOrFail({
-      where: { id: userId },
-    });
+    const user = await this.userRepository.findOneById(userId);
+    if (!user) {
+      //
+    }
     return await this.projectRepository.update(projectId, { users: [user] });
   }
 

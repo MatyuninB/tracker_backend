@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserEntity } from '../entities/user.entity';
+import { UserTypeormEntity } from '../../entities/typeorm-entities/user.typeorm.entity';
 
 export class AssignTeamDTO {
   @ApiProperty({
@@ -14,5 +14,5 @@ export class AssignTeamDTO {
   })
   teamId: number;
 
-  user: UserEntity;
+  user: UserTypeormEntity;
 }

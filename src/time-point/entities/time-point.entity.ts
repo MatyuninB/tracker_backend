@@ -1,46 +1,44 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { TaskEntity } from 'src/task/entities/task.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
+import { TaskEntityDb } from 'src/task/entities/task.entity';
+import { UserEntityDb } from 'src/user/entities/user.entity';
 
-@Entity({ name: 'time-point' })
-export class TimePointEntity extends BaseEntity {
-  @Column({
-    length: 100,
-    unique: true,
-    nullable: false,
-  })
+interface ITimePointEntity {
   title: string;
-
-  @Column({
-    length: 100,
-    unique: true,
-    nullable: true,
-    default: null,
-  })
   description: string | null;
-
-  @Column({ type: 'timestamptz', nullable: false })
   start: Date;
-
-  @Column({ type: 'timestamptz', nullable: true, default: null })
   end: Date | null;
-
-  @Column({ nullable: true })
   task_id: number;
-
-  @Column({ nullable: true })
   user_id: number;
+}
+interface ITimePointEntityRelations {
+  task: TaskEntityDb;
+  user: UserEntityDb;
+}
 
-  @ManyToOne(() => TaskEntity)
-  @JoinColumn({
-    name: 'task_id',
-  })
-  task: TaskEntity;
+interface ITimePointEntityDB
+  extends BaseEntityInterface,
+    ITimePointEntity,
+    ITimePointEntityRelations {}
 
-  @ManyToOne(() => UserEntity)
-  @JoinColumn({
-    name: 'user_id',
-  })
-  user: UserEntity;
+export class TimePointEntity implements ITimePointEntity {
+  title: string;
+  description: string | null;
+  start: Date;
+  end: Date | null;
+  task_id: number;
+  user_id: number;
+}
+
+export class TimePointEntityDb implements ITimePointEntityDB {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  description: string | null;
+  start: Date;
+  end: Date | null;
+  task_id: number;
+  user_id: number;
+  task: TaskEntityDb;
+  user: UserEntityDb;
 }

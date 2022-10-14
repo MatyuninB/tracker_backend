@@ -1,26 +1,18 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TeamEntity } from 'src/team/entity/team.entity';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
-import { Repository } from 'typeorm';
-import { AssignTeamDTO } from './dto/assignTeam.dto';
 import { UserDTO } from './dto/user.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserTypeormEntity } from '../entities/typeorm-entities/user.typeorm.entity';
+import { UserRepositoryInterface } from './interface/user.repository.interface';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>,
-
-    @InjectRepository(TeamEntity)
-    private teamRepository: Repository<TeamEntity>,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface,
   ) {}
 
   async createUser(data: UserDTO) {
-    const user = await this.userRepository.findOne({
-      where: { email: data.email },
-    });
+    const user = await this.userRepository.findOneByEmail(data.email);
 
     if (user) {
       throw new BadRequestException(
@@ -31,42 +23,34 @@ export class UserService {
   }
 
   async findUserByEmail({ email }) {
-    return await this.userRepository.findOne({ where: { email } });
+    const user = await this.userRepository.findOneByEmail(email);
+
+    if (!user) {
+      throw new BadRequestException('User does not exist');
+    }
+
+    return user;
   }
 
   async updateUserRole(userId: number, role: RoleTypeEnum) {
-    await this.userRepository.findOneOrFail({
-      where: { id: userId },
-    });
+    const user = await this.userRepository.findOneById(userId);
+
+    if (!user) {
+      throw new BadRequestException('User does not exist');
+    }
 
     return await this.userRepository.update(userId, { role });
   }
 
-  // async assignTeam({ user, teamId, userId }: AssignTeamDTO) {
-  //   const team = await this.teamRepository.findOneOrFail({
-  //     where: { id: teamId },
-  //   });
+  async getUserInfo(user: UserTypeormEntity) {
+    const userWithProjects = await this.userRepository.findOneWithProjects(
+      user.id,
+    );
 
-  //   if (user.role === RoleTypeEnum.MANAGER) {
-  //     const userWithTeam = await this.userRepository.findOne({
-  //       relations: ['team'],
-  //       where: { id: user.id },
-  //     });
+    if (!userWithProjects) {
+      throw new BadRequestException('User does not exist');
+    }
 
-  //     if (userWithTeam?.team.id !== teamId) {
-  //       throw new Error('Manager should be in the same team!');
-  //     }
-  //   }
-
-  //   await this.userRepository.update(userId, { team });
-
-  //   return `User ${userId} added to team ${team.title}`;
-  // }
-
-  async getUserInfo(user: UserEntity) {
-    return await this.userRepository.findOneOrFail({
-      relations: ['projects'],
-      where: { id: user.id },
-    });
+    return userWithProjects;
   }
 }

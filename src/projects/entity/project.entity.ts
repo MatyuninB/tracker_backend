@@ -1,28 +1,36 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Entity, Column, ManyToMany, JoinTable } from 'typeorm';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
+import { UserEntityDb } from 'src/user/entities/user.entity';
 
-@Entity({ name: 'projects' })
-export class ProjectEntity extends BaseEntity {
-  @Column({
-    length: 100,
-    unique: true,
-  })
+interface IProjectEntity {
   title: string;
-
-  @Column({
-    length: 100,
-    nullable: true,
-  })
   picture: string;
-
-  @Column({ default: false })
   disabled: boolean;
-
-  @Column({ nullable: true })
   user_id: number;
+}
 
-  @ManyToMany(() => UserEntity, (user) => user.projects)
-  @JoinTable()
-  users: UserEntity[];
+interface IProjectEntityRelations {
+  users: UserEntityDb[];
+}
+
+interface IProjectEntityDb
+  extends BaseEntityInterface,
+    IProjectEntity,
+    IProjectEntityRelations {}
+
+export class ProjectEntity implements IProjectEntity {
+  title: string;
+  picture: string;
+  disabled: boolean;
+  user_id: number;
+}
+
+export class ProjectEntityDb implements IProjectEntityDb {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  picture: string;
+  disabled: boolean;
+  user_id: number;
+  users: UserEntityDb[];
 }

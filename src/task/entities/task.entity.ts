@@ -1,36 +1,39 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { ProjectEntity } from 'src/projects/entity/project.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
+import { ProjectEntityDb } from 'src/projects/entity/project.entity';
+import { UserEntityDb } from 'src/user/entities/user.entity';
 
-@Entity({ name: 'task' })
-export class TaskEntity extends BaseEntity {
-  @Column({
-    length: 100,
-    unique: true,
-  })
+interface ITaskEntity {
   title: string;
-
-  @Column({
-    nullable: true,
-  })
   description: string;
-
-  @Column({ nullable: true })
   user_id: number;
-
-  @Column({ nullable: true })
   project_id: number;
+}
 
-  @ManyToOne(() => UserEntity)
-  @JoinColumn({
-    name: 'user_id',
-  })
-  user: UserEntity;
+interface ITaskEntityRelations {
+  user: UserEntityDb;
+  project: ProjectEntityDb;
+}
 
-  @ManyToOne(() => ProjectEntity)
-  @JoinColumn({
-    name: 'project_id',
-  })
-  project: ProjectEntity;
+interface ITaskEntityDb
+  extends BaseEntityInterface,
+    ITaskEntity,
+    ITaskEntityRelations {}
+
+export class TaskEntity implements ITaskEntity {
+  title: string;
+  description: string;
+  user_id: number;
+  project_id: number;
+}
+
+export class TaskEntityDb implements ITaskEntityDb {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  description: string;
+  user_id: number;
+  project_id: number;
+  user: UserEntityDb;
+  project: ProjectEntityDb;
 }

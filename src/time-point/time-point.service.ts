@@ -1,43 +1,47 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TaskEntity } from 'src/task/entities/task.entity';
-import { UserEntity } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
-import { TimePointEntity } from './entities/time-point.entity';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
+import { TaskRepositoryInterface } from 'src/task/interface/task.repository.interface';
+import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
+import { TimePointTypeormEntity } from '../entities/typeorm-entities/time-point.typeorm.entity';
+import { TimePointRepositoryInterface } from './interface/timepoint.repository.interface';
 
 @Injectable()
 export class TimePointService {
   constructor(
-    @InjectRepository(TimePointEntity)
-    private timePointRepository: Repository<TimePointEntity>,
-    @InjectRepository(TaskEntity)
-    private taskRepository: Repository<TaskEntity>,
+    @Inject('TimePointRepositoryInterface')
+    private readonly timePointRepository: TimePointRepositoryInterface,
+    @Inject('TaskRepositoryInterface')
+    private readonly taskRepository: TaskRepositoryInterface,
   ) {}
 
   async addStartTimepoint(
-    user: UserEntity,
+    user: UserTypeormEntity,
     time: Date,
     taskId: number,
     title: string,
     description?: string,
   ) {
-    const task = await this.taskRepository.findOneOrFail({
-      where: { id: taskId, user_id: user.id },
-    });
+    const task = await this.taskRepository.findOneById(taskId);
+    if (!task) {
+      throw new BadRequestException(); // TODO
+    }
 
-    const timePointInDb = await this.timePointRepository.findOne({
-      where: { title },
-    });
+    if (task.user_id != user.id) {
+      //Что то сделать!
+    }
+
+    const timePointInDb = await this.timePointRepository.findByTitle(title);
 
     //  Если тайм поинт с таким тайтлом уже существует
     if (timePointInDb) {
       throw new BadRequestException('Timepoint with this title already exists');
     }
 
-    const lastUserTimePoint = await this.timePointRepository.findOne({
-      order: { end: 'DESC' },
-      where: { user_id: user.id },
-    });
+    const lastUserTimePoint =
+      await this.timePointRepository.findLastUserTimePoint(user.id);
+
+    if (!lastUserTimePoint) {
+      throw new BadRequestException(); // TODO
+    }
 
     //  Если последний тайм поинт ещё не остановлен
     if (!lastUserTimePoint.end) {
@@ -62,20 +66,30 @@ export class TimePointService {
     await this.timePointRepository.save(timePoint);
   }
 
-  async addStopTimepoint(user: UserEntity, time: Date, taskId: number) {
-    const task = await this.taskRepository.findOneOrFail({
-      where: { id: taskId, user_id: user.id },
-    });
+  async addStopTimepoint(user: UserTypeormEntity, time: Date, taskId: number) {
+    const task = await this.taskRepository.findOneById(taskId);
+    if (!task) {
+      throw new BadRequestException(); // TODO
+    }
 
-    const lastUserTimePoint = await this.timePointRepository.findOne({
-      order: { end: 'DESC' },
-      where: { user_id: user.id },
-    });
+    if (task.user_id != user.id) {
+      //Что то сделать!
+    }
 
-    const lastTaskTimePoint = await this.timePointRepository.findOne({
-      order: { end: 'DESC' },
-      where: { user_id: user.id, task_id: task.id },
-    });
+    const lastUserTimePoint =
+      await this.timePointRepository.findLastUserTimePoint(user.id);
+    if (!lastUserTimePoint) {
+      throw new BadRequestException(); // TODO
+    }
+
+    const lastTaskTimePoint =
+      await this.timePointRepository.findLastUserTaskTimePoint(
+        user.id,
+        task.id,
+      );
+    if (!lastTaskTimePoint) {
+      throw new BadRequestException(); // TODO
+    }
 
     //  Если последний тайм поинт в таске уже остановлен
     if (lastTaskTimePoint.end) {
@@ -93,64 +107,40 @@ export class TimePointService {
   }
 
   async getUserTimePoints(
-    user: UserEntity,
+    user: UserTypeormEntity,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointEntity[]> {
-    if (startDate && endDate) {
-      return await this.timePointRepository.find({
-        where: { user_id: user.id, start: startDate, end: endDate },
-      });
-    } else if (startDate) {
-      return await this.timePointRepository.find({
-        where: { user_id: user.id, start: startDate },
-      });
-    } else if (endDate) {
-      return await this.timePointRepository.find({
-        where: { user_id: user.id, end: endDate },
-      });
-    }
-
-    return await this.timePointRepository.find({
-      where: { user_id: user.id },
-      order: { start: 'ASC' },
-    });
+  ) {
+    return await this.timePointRepository.findUserTimePoints(
+      user.id,
+      startDate,
+      endDate,
+    );
   }
 
   async getUserTimePointsByTaskId(
-    user: UserEntity,
+    user: UserTypeormEntity,
     taskId: number,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointEntity[]> {
-    const task = await this.taskRepository.findOneOrFail({
-      where: { id: taskId, user_id: user.id },
-    });
-
-    if (startDate && endDate) {
-      return await this.timePointRepository.find({
-        where: { task, start: startDate, end: endDate },
-      });
-    } else if (startDate) {
-      return await this.timePointRepository.find({
-        where: { task, start: startDate },
-      });
-    } else if (endDate) {
-      return await this.timePointRepository.find({
-        where: { task, end: endDate },
-      });
+  ) {
+    const task = await this.taskRepository.findOneById(taskId);
+    if (!task) {
+      throw new BadRequestException(); // TODO
     }
 
-    return await this.timePointRepository.find({
-      where: { task_id: task.id },
-      order: { start: 'ASC' },
-    });
+    if (task.user_id != user.id) {
+      //Что то сделать!
+    }
+
+    return await this.timePointRepository.findTimePointsByTaskId(
+      task.id,
+      startDate,
+      endDate,
+    );
   }
 
-  async getTimePoint(
-    user: UserEntity,
-    timePointId: number,
-  ): Promise<TimePointEntity> {
+  async getTimePoint(user: UserTypeormEntity, timePointId: number) {
     const timePoint = await this.timePointRepository.findOneOrFail({
       where: { id: timePointId, user_id: user.id },
     });
@@ -159,13 +149,13 @@ export class TimePointService {
   }
 
   async updateTimePoint(
-    user: UserEntity,
+    user: UserTypeormEntity,
     timePointId: number,
     title?: string,
     description?: string,
     start?: Date,
     end?: Date,
-  ): Promise<TimePointEntity> {
+  ) {
     const currentTimePoint = await this.timePointRepository.findOneOrFail({
       where: { id: timePointId, user_id: user.id },
     });
@@ -183,18 +173,17 @@ export class TimePointService {
         throw new BadRequestException('The time point hasnt stopped yet.');
       }
 
-      const userTaskTimePoints: TimePointEntity[] =
-        await this.timePointRepository.find({ where: { user_id: user.id } });
+      const userTaskTimePoints = await this.timePointRepository.find({
+        where: { user_id: user.id },
+      });
 
       const timePointIndexInArr = userTaskTimePoints.findIndex(
         (timePoint) => timePoint.id === timePointId,
       );
 
-      const previousUserTimePoint: TimePointEntity | undefined =
-        userTaskTimePoints[timePointIndexInArr - 1];
+      const previousUserTimePoint = userTaskTimePoints[timePointIndexInArr - 1];
 
-      const nextUserTimePoint: TimePointEntity | undefined =
-        userTaskTimePoints[timePointIndexInArr + 1];
+      const nextUserTimePoint = userTaskTimePoints[timePointIndexInArr + 1];
 
       /**
        *  start           end   |  start        end   |   start          end
@@ -225,6 +214,7 @@ export class TimePointService {
         //  Время начала не может быть меньше времени конца предыдущего time point
         if (
           previousUserTimePoint &&
+          previousUserTimePoint.end &&
           new Date(start) < new Date(previousUserTimePoint.end)
         ) {
           throw new BadRequestException(

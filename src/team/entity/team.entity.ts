@@ -1,17 +1,21 @@
-import { BaseEntity } from 'src/helpers/base-entity.entity';
-import { Entity, Column } from 'typeorm';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
 
-@Entity({ name: 'team' })
-export class TeamEntity extends BaseEntity {
-  @Column({
-    length: 100,
-    unique: true,
-  })
+interface ITeamEntity {
   title: string;
+  description: string;
+}
 
-  @Column({
-    length: 1000,
-    unique: true,
-  })
+interface ITeamEntityDb extends BaseEntityInterface, ITeamEntity {}
+
+export class TeamEntity implements ITeamEntity {
+  title: string;
+  description: string;
+}
+
+export class TeamEntityDb implements ITeamEntityDb {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
   description: string;
 }
