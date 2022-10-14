@@ -1,16 +1,46 @@
-import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
+import { ProjectEntityDb } from 'src/projects/entity/project.entity';
+import { TimePointEntityDb } from 'src/time-point/entities/time-point.entity';
 import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
-import ProjectEntity from '../../projects/entity/project.entity';
-import { TaskEntity } from '../../task/entities/task.entity';
-import TimePointEntity from '../../time-point/entities/time-point.entity';
+import { TaskEntityDb } from '../../task/entities/task.entity';
 
-export default class UserEntity extends BaseAbstractEntity {
+interface IUserEntity {
   name: string;
   lastName: string;
   role: RoleTypeEnum;
   email: string;
   avatar: string;
-  tasks: TaskEntity[];
-  projects: ProjectEntity[];
-  times: TimePointEntity[];
+}
+
+interface IUserEntityRelation {
+  tasks: TaskEntityDb[];
+  projects: ProjectEntityDb[];
+  times: TimePointEntityDb[];
+}
+
+interface IUserEntityDb
+  extends BaseEntityInterface,
+    IUserEntity,
+    IUserEntityRelation {}
+
+export class UserEntity implements IUserEntity {
+  avatar: string;
+  name: string;
+  lastName: string;
+  role: RoleTypeEnum;
+  email: string;
+}
+
+export class UserEntityDb implements IUserEntityDb {
+  avatar: string;
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  name: string;
+  lastName: string;
+  role: RoleTypeEnum;
+  email: string;
+  tasks: TaskEntityDb[];
+  projects: ProjectEntityDb[];
+  times: TimePointEntityDb[];
 }

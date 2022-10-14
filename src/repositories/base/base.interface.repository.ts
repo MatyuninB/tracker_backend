@@ -1,19 +1,19 @@
-export interface BaseInterfaceRepository<T> {
-  create(data?: T | any): T;
+export interface BaseInterfaceRepository<T, E> {
+  create(data?: T | any): E;
 
-  findOne(data: any): Promise<T | null>;
+  findOne(data: any): Promise<E | null>;
 
-  findOneById(id: number): Promise<T | null>;
+  findOneById(id: number): Promise<E | null>;
 
-  findAll(): Promise<T[]>;
+  findAll(): Promise<E[]>;
 
   remove(id: string | number): Promise<any>;
 
-  save(data: any): Promise<T>;
+  save(data: any): Promise<E>;
 
-  findOneOrFail(data: any): Promise<T>;
+  findOneOrFail(data: any): Promise<E>;
 
   update(data: any, data2: any): Promise<void>;
 
-  find(data: any): Promise<T[]>;
+  find(data: any): Promise<E[]>;
 }

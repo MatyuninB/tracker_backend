@@ -4,7 +4,6 @@ import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.en
 import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
 import { TeamRepositoryInterface } from './interface/team.repository.interface';
 import { UserTeamRepositoryInterface } from './interface/user-team.repository.interface';
-import TeamEntity from './entity/team.entity';
 
 @Injectable()
 export class TeamService {
@@ -118,11 +117,11 @@ export class TeamService {
     return await this.userTeamRepository.remove(deletedUserTeam.id);
   }
 
-  async getAllTeams(): Promise<TeamEntity[]> {
+  async getAllTeams() {
     return await this.teamRepository.findManyWithUsers();
   }
 
-  async getTeamWithUsers(teamId = 1): Promise<TeamEntity> {
+  async getTeamWithUsers(teamId = 1) {
     const team = await this.teamRepository.findOneByIdWithUsers(teamId);
     if (!team) {
       throw new BadRequestException(); // TODO

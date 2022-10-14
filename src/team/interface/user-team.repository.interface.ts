@@ -1,8 +1,8 @@
-import UserTeamEntity from 'src/team/entity/user-team.entity';
 import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.repository';
+import { UserTeamEntity, UserTeamEntityDb } from '../entity/user-team.entity';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface UserTeamRepositoryInterface
-  extends BaseInterfaceRepository<UserTeamEntity> {
-  findOneByUserId(userId: number): Promise<UserTeamEntity | null>;
+  extends BaseInterfaceRepository<UserTeamEntity, UserTeamEntityDb> {
+  findOneByUserId(userId: number): Promise<UserTeamEntityDb | null>;
 }

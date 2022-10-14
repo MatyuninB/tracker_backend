@@ -1,12 +1,39 @@
-import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
-import ProjectEntity from '../../projects/entity/project.entity';
-import UserEntity from '../../user/entities/user.entity';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
+import { ProjectEntityDb } from 'src/projects/entity/project.entity';
+import { UserEntityDb } from 'src/user/entities/user.entity';
 
-export class TaskEntity extends BaseAbstractEntity {
+interface ITaskEntity {
   title: string;
   description: string;
   user_id: number;
   project_id: number;
-  user: UserEntity;
-  project: ProjectEntity;
+}
+
+interface ITaskEntityRelations {
+  user: UserEntityDb;
+  project: ProjectEntityDb;
+}
+
+interface ITaskEntityDb
+  extends BaseEntityInterface,
+    ITaskEntity,
+    ITaskEntityRelations {}
+
+export class TaskEntity implements ITaskEntity {
+  title: string;
+  description: string;
+  user_id: number;
+  project_id: number;
+}
+
+export class TaskEntityDb implements ITaskEntityDb {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  description: string;
+  user_id: number;
+  project_id: number;
+  user: UserEntityDb;
+  project: ProjectEntityDb;
 }

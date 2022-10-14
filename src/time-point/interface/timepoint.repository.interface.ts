@@ -1,8 +1,11 @@
-import TimePointEntity from 'src/time-point/entities/time-point.entity';
 import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.repository';
+import {
+  TimePointEntity,
+  TimePointEntityDb,
+} from '../entities/time-point.entity';
 
 export interface TimePointRepositoryInterface
-  extends BaseInterfaceRepository<TimePointEntity> {
+  extends BaseInterfaceRepository<TimePointEntity, TimePointEntityDb> {
   findByTitle(title: string): Promise<TimePointEntity | null>;
 
   findLastUserTimePoint(userId: number): Promise<TimePointEntity | null>;
@@ -10,17 +13,17 @@ export interface TimePointRepositoryInterface
   findLastUserTaskTimePoint(
     userId: number,
     taskId: number,
-  ): Promise<TimePointEntity | null>;
+  ): Promise<TimePointEntityDb | null>;
 
   findUserTimePoints(
     userId: number,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointEntity[]>;
+  ): Promise<TimePointEntityDb[]>;
 
   findTimePointsByTaskId(
     taskId: number,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointEntity[]>;
+  ): Promise<TimePointEntityDb[]>;
 }

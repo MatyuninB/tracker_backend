@@ -1,14 +1,44 @@
-import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
-import { TaskEntity } from '../../task/entities/task.entity';
-import UserEntity from '../../user/entities/user.entity';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
+import { TaskEntityDb } from 'src/task/entities/task.entity';
+import { UserEntityDb } from 'src/user/entities/user.entity';
 
-export default class TimePointEntity extends BaseAbstractEntity {
+interface ITimePointEntity {
   title: string;
   description: string | null;
   start: Date;
   end: Date | null;
   task_id: number;
   user_id: number;
-  task: TaskEntity;
-  user: UserEntity;
+}
+interface ITimePointEntityRelations {
+  task: TaskEntityDb;
+  user: UserEntityDb;
+}
+
+interface ITimePointEntityDB
+  extends BaseEntityInterface,
+    ITimePointEntity,
+    ITimePointEntityRelations {}
+
+export class TimePointEntity implements ITimePointEntity {
+  title: string;
+  description: string | null;
+  start: Date;
+  end: Date | null;
+  task_id: number;
+  user_id: number;
+}
+
+export class TimePointEntityDb implements ITimePointEntityDB {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  description: string | null;
+  start: Date;
+  end: Date | null;
+  task_id: number;
+  user_id: number;
+  task: TaskEntityDb;
+  user: UserEntityDb;
 }

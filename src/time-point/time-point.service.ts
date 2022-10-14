@@ -55,16 +55,6 @@ export class TimePointService {
       );
     }
 
-    // const timePoint: TimePointEntity = {
-    //   title: '',
-    //   description: '',
-    //   start: undefined,
-    //   end: undefined,
-    //   task_id: 0,
-    //   user_id: 0,
-    //   id: 0,
-    // };
-
     const timePoint = this.timePointRepository.create();
 
     timePoint.user = user;
@@ -120,7 +110,7 @@ export class TimePointService {
     user: UserTypeormEntity,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointTypeormEntity[]> {
+  ) {
     return await this.timePointRepository.findUserTimePoints(
       user.id,
       startDate,
@@ -133,7 +123,7 @@ export class TimePointService {
     taskId: number,
     startDate?: Date,
     endDate?: Date,
-  ): Promise<TimePointTypeormEntity[]> {
+  ) {
     const task = await this.taskRepository.findOneById(taskId);
     if (!task) {
       throw new BadRequestException(); // TODO
@@ -150,10 +140,7 @@ export class TimePointService {
     );
   }
 
-  async getTimePoint(
-    user: UserTypeormEntity,
-    timePointId: number,
-  ): Promise<TimePointTypeormEntity> {
+  async getTimePoint(user: UserTypeormEntity, timePointId: number) {
     const timePoint = await this.timePointRepository.findOneOrFail({
       where: { id: timePointId, user_id: user.id },
     });
@@ -168,7 +155,7 @@ export class TimePointService {
     description?: string,
     start?: Date,
     end?: Date,
-  ): Promise<TimePointTypeormEntity> {
+  ) {
     const currentTimePoint = await this.timePointRepository.findOneOrFail({
       where: { id: timePointId, user_id: user.id },
     });
@@ -186,18 +173,17 @@ export class TimePointService {
         throw new BadRequestException('The time point hasnt stopped yet.');
       }
 
-      const userTaskTimePoints: TimePointTypeormEntity[] =
-        await this.timePointRepository.find({ where: { user_id: user.id } });
+      const userTaskTimePoints = await this.timePointRepository.find({
+        where: { user_id: user.id },
+      });
 
       const timePointIndexInArr = userTaskTimePoints.findIndex(
         (timePoint) => timePoint.id === timePointId,
       );
 
-      const previousUserTimePoint: TimePointTypeormEntity | undefined =
-        userTaskTimePoints[timePointIndexInArr - 1];
+      const previousUserTimePoint = userTaskTimePoints[timePointIndexInArr - 1];
 
-      const nextUserTimePoint: TimePointTypeormEntity | undefined =
-        userTaskTimePoints[timePointIndexInArr + 1];
+      const nextUserTimePoint = userTaskTimePoints[timePointIndexInArr + 1];
 
       /**
        *  start           end   |  start        end   |   start          end

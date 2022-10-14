@@ -1,10 +1,36 @@
-import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
-import UserEntity from '../../user/entities/user.entity';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
+import { UserEntityDb } from 'src/user/entities/user.entity';
 
-export default class ProjectEntity extends BaseAbstractEntity {
+interface IProjectEntity {
   title: string;
   picture: string;
   disabled: boolean;
   user_id: number;
-  users: UserEntity[];
+}
+
+interface IProjectEntityRelations {
+  users: UserEntityDb[];
+}
+
+interface IProjectEntityDb
+  extends BaseEntityInterface,
+    IProjectEntity,
+    IProjectEntityRelations {}
+
+export class ProjectEntity implements IProjectEntity {
+  title: string;
+  picture: string;
+  disabled: boolean;
+  user_id: number;
+}
+
+export class ProjectEntityDb implements IProjectEntityDb {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  title: string;
+  picture: string;
+  disabled: boolean;
+  user_id: number;
+  users: UserEntityDb[];
 }

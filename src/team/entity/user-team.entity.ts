@@ -1,14 +1,42 @@
-import { BaseAbstractEntity } from 'src/entities/base/base.abstract.entity';
+import { BaseEntityInterface } from 'src/entities/base/base.entity.interface';
 import { TeamRoleTypeEnum } from 'src/type/TeamRoleTypeEnum';
-import TeamEntity from './team.entity';
-import UserEntity from '../../user/entities/user.entity';
+import { UserEntityDb } from 'src/user/entities/user.entity';
+import { TeamEntityDb } from './team.entity';
 
-export default class UserTeamEntity extends BaseAbstractEntity {
+interface IUserTeamEntity {
   role: TeamRoleTypeEnum;
   team_id: number;
   user_id: number;
   inviter_id: number;
-  team: TeamEntity;
-  user: UserEntity;
-  inviter: UserEntity;
+}
+
+interface IUserTeamEntityRelattion {
+  team: TeamEntityDb;
+  user: UserEntityDb;
+  inviter: UserEntityDb;
+}
+
+interface IUserTeamEntityDb
+  extends BaseEntityInterface,
+    IUserTeamEntity,
+    IUserTeamEntityRelattion {}
+
+export class UserTeamEntity implements IUserTeamEntity {
+  role: TeamRoleTypeEnum;
+  team_id: number;
+  user_id: number;
+  inviter_id: number;
+}
+
+export class UserTeamEntityDb implements IUserTeamEntityDb {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  role: TeamRoleTypeEnum;
+  team_id: number;
+  user_id: number;
+  inviter_id: number;
+  team: TeamEntityDb;
+  user: UserEntityDb;
+  inviter: UserEntityDb;
 }

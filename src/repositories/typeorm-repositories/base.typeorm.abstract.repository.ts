@@ -2,7 +2,7 @@ import { BaseInterfaceRepository } from '../base/base.interface.repository';
 import { DeleteResult, ObjectLiteral, Repository } from 'typeorm';
 
 export abstract class BaseAbstractRepository<T extends ObjectLiteral>
-  implements BaseInterfaceRepository<T>
+  implements BaseInterfaceRepository<T, T>
 {
   private entity: Repository<T>;
 

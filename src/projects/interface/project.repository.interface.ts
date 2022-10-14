@@ -1,9 +1,8 @@
-import ProjectEntity from 'src/projects/entity/project.entity';
 import { BaseInterfaceRepository } from 'src/repositories/base/base.interface.repository';
+import { ProjectEntity, ProjectEntityDb } from '../entity/project.entity';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ProjectRepositoryInterface
-  extends BaseInterfaceRepository<ProjectEntity> {
-  findOneByTitle(title: string): Promise<ProjectEntity | null>;
-  findManyByUserId(userId: number): Promise<ProjectEntity[]>;
+  extends BaseInterfaceRepository<ProjectEntity, ProjectEntityDb> {
+  findOneByTitle(title: string): Promise<ProjectEntityDb | null>;
+  findManyByUserId(userId: number): Promise<ProjectEntityDb[]>;
 }
