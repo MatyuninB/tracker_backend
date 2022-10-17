@@ -16,8 +16,8 @@ export class TaskTypeormRepository
   ) {
     super(taskRepository);
   }
-  async findOneByUserId(id: number): Promise<TaskTypeormEntity | null> {
-    return await this.taskRepository.findOne({ where: { user_id: id } });
+  async findManyByUserId(id: number): Promise<TaskTypeormEntity[]> {
+    return await this.taskRepository.find({ where: { user_id: id } });
   }
 
   async findOneByTitle(title: string): Promise<TaskTypeormEntity | null> {

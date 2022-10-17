@@ -9,6 +9,9 @@ export abstract class BaseAbstractRepository<T extends ObjectLiteral>
   protected constructor(entity: Repository<T>) {
     this.entity = entity;
   }
+  remove(id: string | number): Promise<number> {
+    throw new Error('Method not implemented.');
+  }
   public create(data?: any): T {
     return this.entity.create();
   }
@@ -33,10 +36,6 @@ export abstract class BaseAbstractRepository<T extends ObjectLiteral>
 
   public async findAll(): Promise<T[]> {
     return await this.entity.find();
-  }
-
-  public async remove(id: string): Promise<DeleteResult> {
-    return await this.entity.delete(id);
   }
 
   public async findOne(data: any): Promise<T | null> {

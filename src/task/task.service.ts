@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ProjectRepositoryInterface } from 'src/projects/interface/project.repository.interface';
 import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
+import { TaskEntity } from './entities/task.entity';
 import { TaskRepositoryInterface } from './interface/task.repository.interface';
 
 @Injectable()
@@ -35,23 +36,25 @@ export class TaskService {
       throw new BadRequestException('A task with the same name already exists');
     }
 
-    return await this.taskRepository.save({
-      user,
-      project,
+    const taskEntity: TaskEntity = {
       title,
       description,
-    });
+      user_id: userId,
+      project_id: projectId,
+    };
+
+    return await this.taskRepository.save(taskEntity);
   }
 
   async findByUserId(userId: number) {
-    return await this.taskRepository.findOneByUserId(userId);
+    return await this.taskRepository.findManyByUserId(userId);
   }
 
   async removeById(id: number) {
     const task = await this.taskRepository.findOneById(id);
     if (!task) {
-      throw new BadRequestException(); // TODO
+      throw new BadRequestException('Tasks do not exist');
     }
-    return await this.taskRepository.remove(task.id);
+    return await this.taskRepository.remove(id);
   }
 }

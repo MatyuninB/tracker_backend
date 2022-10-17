@@ -4,7 +4,7 @@ import { UserEntityDb } from 'src/user/entities/user.entity';
 
 interface ITaskEntity {
   title: string;
-  description: string;
+  description?: string;
   user_id: number;
   project_id: number;
 }
@@ -21,7 +21,7 @@ interface ITaskEntityDb
 
 export class TaskEntity implements ITaskEntity {
   title: string;
-  description: string;
+  description?: string;
   user_id: number;
   project_id: number;
 }

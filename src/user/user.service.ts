@@ -3,6 +3,7 @@ import { RoleTypeEnum } from 'src/type/RoleTypeEnum';
 import { UserDTO } from './dto/user.dto';
 import { UserTypeormEntity } from '../entities/typeorm-entities/user.typeorm.entity';
 import { UserRepositoryInterface } from './interface/user.repository.interface';
+import { UserEntity } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -19,7 +20,15 @@ export class UserService {
         'A user with the same email already exists',
       );
     }
-    return await this.userRepository.save(data);
+
+    const userEntity: UserEntity = {
+      avatar: data.avatar ? data.avatar : 'undefined',
+      name: data.name ? data.name : 'undefined',
+      lastName: data.lastName ? data.lastName : 'undefined',
+      role: data.role ? data.role : RoleTypeEnum.USER,
+      email: data.email,
+    };
+    return await this.userRepository.save(userEntity);
   }
 
   async findUserByEmail({ email }) {

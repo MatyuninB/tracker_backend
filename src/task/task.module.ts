@@ -7,6 +7,7 @@ import { TaskTypeormEntity } from 'src/entities/typeorm-entities/task.typeorm.en
 import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.entity';
 import { ProjectTypeormEntity } from 'src/entities/typeorm-entities/project.typeorm.entity';
 import { UserTypeormRepository } from 'src/repositories/typeorm-repositories/user.typeorm.repository';
+import { TaskRepository } from 'src/repositories/task.repository';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { UserTypeormRepository } from 'src/repositories/typeorm-repositories/use
     TaskService,
     {
       provide: 'TaskRepositoryInterface',
-      useClass: TaskTypeormRepository,
+      useClass: TaskRepository,
     },
     {
       provide: 'UserRepositoryInterface',

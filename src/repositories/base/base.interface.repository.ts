@@ -7,9 +7,9 @@ export interface BaseInterfaceRepository<T, E> {
 
   findAll(): Promise<E[]>;
 
-  remove(id: string | number): Promise<any>;
+  remove(id: number | string): Promise<number>;
 
-  save(data: any): Promise<E>;
+  save(entity: T): Promise<any>;
 
   findOneOrFail(data: any): Promise<E>;
 

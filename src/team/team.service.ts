@@ -4,6 +4,7 @@ import { UserTypeormEntity } from 'src/entities/typeorm-entities/user.typeorm.en
 import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
 import { TeamRepositoryInterface } from './interface/team.repository.interface';
 import { UserTeamRepositoryInterface } from './interface/user-team.repository.interface';
+import { TeamEntity } from './entity/team.entity';
 
 @Injectable()
 export class TeamService {
@@ -50,7 +51,11 @@ export class TeamService {
     if (team) {
       throw new BadRequestException('A team with the same name already exists');
     }
-    return await this.teamRepository.save({ title });
+
+    const teamEntity: TeamEntity = {
+      title: title,
+    };
+    return await this.teamRepository.save(teamEntity);
   }
 
   async addManegerInTeam(

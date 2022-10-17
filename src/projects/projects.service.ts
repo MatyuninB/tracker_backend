@@ -1,6 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UserRepositoryInterface } from 'src/user/interface/user.repository.interface';
 import { ProjectDTO } from './dto/projects.dto';
+import { ProjectEntity } from './entity/project.entity';
 import { ProjectRepositoryInterface } from './interface/project.repository.interface';
 
 @Injectable()
@@ -20,14 +21,21 @@ export class ProjectsService {
     return this.projectRepository.findManyByUserId(userId);
   }
 
-  async createProject(data: ProjectDTO) {
+  async createProject(data: ProjectDTO, userId: number) {
     const project = await this.projectRepository.findOneByTitle(data.title);
     if (project) {
       throw new BadRequestException(
         'A project with the same name already exists',
       );
     }
-    await this.projectRepository.save(data);
+
+    const projectEntity: ProjectEntity = {
+      title: data.title,
+      picture: data.picture,
+      disabled: false,
+      user_id: userId,
+    };
+    await this.projectRepository.save(projectEntity);
   }
 
   async assignUser(userId: number, projectId: number) {

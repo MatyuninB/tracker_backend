@@ -32,7 +32,7 @@ export class TaskTypeormEntity
   })
   user: UserTypeormEntity;
 
-  @ManyToOne(() => ProjectTypeormEntity)
+  @ManyToOne(() => ProjectTypeormEntity, { onDelete: 'CASCADE' })
   @JoinColumn({
     name: 'project_id',
   })

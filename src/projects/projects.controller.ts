@@ -34,8 +34,8 @@ export class ProjectsController {
 
   @Post()
   @RoleCheck([RoleTypeEnum.MANAGER, RoleTypeEnum.ADMIN])
-  async createProject(@Body() body: ProjectDTO) {
-    return await this.projectsService.createProject(body);
+  async createProject(@Req() req, @Body() body: ProjectDTO) {
+    return await this.projectsService.createProject(body, req.user.id);
   }
 
   @Patch('user')
